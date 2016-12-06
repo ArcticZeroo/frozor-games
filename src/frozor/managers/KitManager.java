@@ -10,7 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class KitManager implements Listener{
     }
 
     @EventHandler
-    public void onLogin(PlayerLoginEvent event){
+    public void onJoin(PlayerJoinEvent event){
         if(defaultKit != null){
             arcade.getDebugManager().print("Assigning default kit " + defaultKit.getName() + " to joined player " + event.getPlayer().getName());
             selectKit(event.getPlayer().getUniqueId(), defaultKit);
