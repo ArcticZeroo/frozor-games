@@ -70,8 +70,8 @@ public class WaitingLobbyManager implements Listener{
 
         if(onlineCount >= playerMin && arcade.getGameState() == GameState.LOBBY){
             //If there are at least minimum players, and the timer hasn't started yet
-            waitingTimer.runTaskTimer(arcade.getPlugin(), 20L, 20L);
-            new GameStateChangeEvent("Game State has been changed to TIMER!", GameState.TIMER).callEvent();
+            waitingTimer.startTimer();
+            arcade.setGameState(GameState.TIMER);
 
         }else if(onlineCount == playerMax){
             //If players is max, check if the timer can be shortened and do so if it can
@@ -88,9 +88,12 @@ public class WaitingLobbyManager implements Listener{
         //Only handling events in waiting lobby, so that things don't break.
         if(arcade.getGameState() != GameState.TIMER && arcade.getGameState() != GameState.LOBBY ) return;
 
-        if(Bukkit.getServer().getOnlinePlayers().size() < getPlayerMin()){
-            waitingTimer.reset();
-            waitingLobbyScoreboard.setWaiting();
+        if(arcade.getGameState() == GameState.TIMER){
+            if(Bukkit.getServer().getOnlinePlayers().size() < getPlayerMin()){
+                waitingTimer.reset();
+                waitingLobbyScoreboard.setWaiting();
+
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class WaitingTimer extends BukkitRunnable{
     private int startTime;
     private int timer;
+    private boolean active;
     private Arcade arcade;
 
     public WaitingTimer(Arcade arcade, int time){
@@ -16,7 +17,12 @@ public class WaitingTimer extends BukkitRunnable{
         startTime = timer = time;
     }
 
+    public boolean isActive(){
+        return active;
+    }
+
     public void reset(){
+        this.active = false;
         this.cancel();
         setTime(startTime);
     }
@@ -39,14 +45,19 @@ public class WaitingTimer extends BukkitRunnable{
         return startTime;
     }
 
+    public void startTimer(){
+        active = true;
+        this.runTaskTimer(arcade.getPlugin(), 20L, 20L);
+    }
+
     @Override
     public void run(){
         if(timer > 0){
             timer--;
             emitTime();
         }else{
-            this.cancel();
-            new GameStateChangeEvent("Game state has been changed to START", GameState.START).callEvent();
+            this.reset();
+            arcade.setGameState(GameState.START);
         }
     }
 }
