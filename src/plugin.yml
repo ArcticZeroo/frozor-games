@@ -1,0 +1,5 @@
+name: Frozor Games
+description: Game Engine
+author: Artix
+version: 1.0.0
+main: frozor.game.CastleSiege
