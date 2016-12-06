@@ -5,33 +5,50 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerKit {
-    private String kitName;
-    private String[] kitDescription;
-    private ItemStack kitDisplayItem;
+    protected String name;
+    protected String[] description;
+    protected ItemStack displayItem;
+    protected ItemStack[] startingItems = {};
+    protected ItemStack[] startingArmor = {};
 
-    PlayerKit(String name, String[] description, ItemStack kitDisplayItem){
-        this.kitName = name;
-        this.kitDescription = description;
-        this.kitDisplayItem = kitDisplayItem;
+    PlayerKit(String name, String[] description, ItemStack displayItem){
+        this.name = name;
+        this.description = description;
+        this.displayItem = displayItem;
+    }
+
+    protected void addStartingItem(ItemStack item){
+        startingItems[startingItems.length] = item;
+    }
+
+    protected void addStartingItems(ItemStack[] items){
+        for(ItemStack item : items){
+            addStartingItem(item);
+        }
+    }
+
+    protected void addStartingArmor(ItemStack item){
+        startingArmor[startingArmor.length] = item;
     }
 
     public String getName(){
-        return kitName;
+        return name;
     }
 
     public String[] getDescription(){
-        return kitDescription;
+        return description;
     }
 
     public ItemStack getDisplayItem(){
-        return kitDisplayItem;
+        return displayItem;
+    }
+
+    protected void giveStartingItems(Player player){
+        player.getInventory().setArmorContents(startingItems);
+        player.getInventory().setContents(startingArmor);
     }
 
     public void giveItems(Player player){
-        ItemStack[] defaultArmor = {new ItemStack(Material.LEATHER_HELMET), new ItemStack(Material.LEATHER_CHESTPLATE), new ItemStack(Material.LEATHER_LEGGINGS), new ItemStack(Material.LEATHER_BOOTS)};
-        player.getInventory().setArmorContents(defaultArmor);
-
-        ItemStack[] defaultItems = {new ItemStack(Material.WOOD_SWORD)};
-        player.getInventory().setContents(defaultItems);
+        giveStartingItems(player);
     }
 }
