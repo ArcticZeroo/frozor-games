@@ -11,10 +11,7 @@ public class Scout extends PlayerKit {
     public Scout() {
         super("Scout", new String[] {"§7Run at the speed of light!", "", "§fYou Will Receive:", "§3•§Wood Sword", "§3•§a2 §fSpeed 2 Potion", "§3•§fLeather Helmet", "§3•§fLeather Chestplate", "§3•§fLeather Leggings", "§3•§fLeather Boots", "§3•§fPermanent §aWeakness 1"}, new ItemStack(Material.SUGAR));
 
-        ItemStack pearls = new ItemStack(Material.ENDER_PEARL);
-        pearls.setAmount(2);
-
-        addStartingItems(new ItemStack[]{new ItemStack(Material.WOOD_SWORD), pearls});
+        addStartingItems(new ItemStack[]{new ItemStack(Material.WOOD_SWORD), new ItemStack(Material.ENDER_PEARL, 2)});
     }
 
     public void giveItems(Player player){

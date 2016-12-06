@@ -16,9 +16,4 @@ public class Archer extends PlayerKit {
 
         addStartingItems(new ItemStack[]{new ItemStack(Material.WOOD_SWORD), new ItemStack(Material.BOW), arrows});
     }
-
-    public void giveItems(Player player){
-        player.getInventory().setArmorContents(startingArmor);
-        player.getInventory().setContents(startingItems);
-    }
 }

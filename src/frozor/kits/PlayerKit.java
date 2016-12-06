@@ -4,12 +4,15 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerKit {
     protected String name;
     protected String[] description;
     protected ItemStack displayItem;
-    protected ItemStack[] startingItems = {};
-    protected ItemStack[] startingArmor = {};
+    protected List<ItemStack> startingItems = new ArrayList<>();
+    protected ItemStack[] startingArmor;
 
     PlayerKit(String name, String[] description, ItemStack displayItem){
         this.name = name;
@@ -17,18 +20,18 @@ public class PlayerKit {
         this.displayItem = displayItem;
     }
 
-    protected void addStartingItem(ItemStack item){
-        startingItems[startingItems.length] = item;
+    public void addStartingItem(ItemStack item){
+        startingItems.add(item);
     }
 
-    protected void addStartingItems(ItemStack[] items){
+    public void addStartingItems(ItemStack[] items){
         for(ItemStack item : items){
             addStartingItem(item);
         }
     }
 
-    protected void addStartingArmor(ItemStack item){
-        startingArmor[startingArmor.length] = item;
+    public void setStartingArmor(ItemStack[] items){
+        startingArmor = items;
     }
 
     public String getName(){
@@ -44,8 +47,13 @@ public class PlayerKit {
     }
 
     protected void giveStartingItems(Player player){
-        player.getInventory().setArmorContents(startingItems);
-        player.getInventory().setContents(startingArmor);
+        for(ItemStack item : startingItems){
+            player.getInventory().addItem(item);
+        }
+
+        if(startingArmor != null){
+            player.getInventory().setArmorContents(startingArmor);
+        }
     }
 
     public void giveItems(Player player){
