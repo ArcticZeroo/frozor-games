@@ -7,6 +7,7 @@ import org.bukkit.event.HandlerList;
 public class CustomEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
     private String message;
+    private boolean cancelled = false;
 
     public CustomEvent(String message){
         this.message = message;
@@ -22,6 +23,14 @@ public class CustomEvent extends Event{
 
     public static HandlerList getHandlerList(){
         return handlers;
+    }
+
+    public void setCancelled(boolean cancel){
+        cancelled = cancel;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
     }
 
     public void callEvent(){
