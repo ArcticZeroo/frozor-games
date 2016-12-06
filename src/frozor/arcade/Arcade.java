@@ -51,6 +51,15 @@ public class Arcade implements Listener{
         return debugManager;
     }
 
+    public void setGameState(GameState gameState){
+        GameStateChangeEvent event = new GameStateChangeEvent("Game state has been updated", gameState);
+        event.callEvent();
+
+        if(event.isCancelled()) return;
+
+        this.gameState = gameState;
+    }
+
     //Event Handlers
 
     @EventHandler
