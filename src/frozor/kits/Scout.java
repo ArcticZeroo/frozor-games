@@ -17,5 +17,6 @@ public class Scout extends PlayerKit {
     public void giveItems(Player player){
         giveStartingItems(player);
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 999999999, 0, true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 999999999, 0, true));
     }
 }
