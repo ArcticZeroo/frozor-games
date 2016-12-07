@@ -2,16 +2,24 @@ package frozor.game;
 
 import frozor.arcade.Arcade;
 import frozor.kits.PlayerKit;
+import frozor.managers.NotificationManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Game extends JavaPlugin{
     protected Arcade arcade;
     protected String title;
     protected PlayerKit[] kits;
+    protected NotificationManager notificationManager;
 
     public Game(String title, PlayerKit[] kits){
         this.title = title;
         this.kits = kits;
+
+        notificationManager = new NotificationManager(title);
+    }
+
+    public NotificationManager getNotificationManager() {
+        return notificationManager;
     }
 
     public String getTitle(){
