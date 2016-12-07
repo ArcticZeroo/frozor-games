@@ -1,14 +1,11 @@
 package frozor.game;
 
-import frozor.kits.Archer;
-import frozor.kits.Knight;
-import frozor.kits.PlayerKit;
-import frozor.kits.Scout;
+import frozor.kits.*;
 import org.bukkit.event.Listener;
 
 public class CastleSiege extends Game implements Listener{
     public CastleSiege(){
-        super("Castle Siege", new PlayerKit[]{new Knight(), new Archer(), new Scout()});
+        super("Castle Siege", new PlayerKit[]{new Knight(), new Archer(), new Scout(), new FireMage()});
     }
 
     @Override
