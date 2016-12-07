@@ -3,7 +3,6 @@ package frozor.managers;
 import frozor.arcade.Arcade;
 import frozor.component.WaitingLobbyScoreboard;
 import frozor.enums.GameState;
-import frozor.events.GameStateChangeEvent;
 import frozor.tasks.WaitingTimer;
 import frozor.util.UtilPlayer;
 import org.bukkit.Bukkit;
@@ -30,16 +29,18 @@ public class WaitingLobbyManager implements Listener{
     private WaitingTimer waitingTimer;
     private WaitingLobbyScoreboard waitingLobbyScoreboard;
 
-    public WaitingLobbyManager(Arcade arcade, int min, int max) {
+    public WaitingLobbyManager(Arcade arcade) {
         this.arcade = arcade;
-        playerMin = min;
-        playerMax = max;
+        playerMin = arcade.getGame().getSettings().getPlayerMin();
+        playerMax = arcade.getGame().getSettings().getPlayerMax();
 
         arcade.RegisterEvents(this);
-        arcade.getDebugManager().print(String.format("Player Min: %s, Player Max: %s", min, max));
+        arcade.getDebugManager().print(String.format("Player Min: %s, Player Max: %s", playerMin, playerMax));
 
         waitingTimer = new WaitingTimer(arcade, minTimer);
         waitingLobbyScoreboard = new WaitingLobbyScoreboard(this);
+
+        arcade.getDamageManager().setAllowPlayerDamage(false);
     }
 
     public int getPlayerMin(){
@@ -97,7 +98,7 @@ public class WaitingLobbyManager implements Listener{
         }
     }
 
-    //Prevent Block Placing
+    //Prevent Block Breaking
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event){
         if(arcade.getGameState() != GameState.PLAYING){
