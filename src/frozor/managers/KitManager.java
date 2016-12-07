@@ -56,9 +56,8 @@ public class KitManager implements Listener{
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         if(defaultKit != null){
-            arcade.getDebugManager().print("Assigning default kit " + defaultKit.getName() + " to joined player " + event.getPlayer().getName());
             selectKit(event.getPlayer().getUniqueId(), defaultKit);
-            event.getPlayer().sendMessage(notificationManager.getMessage("Equipped default kit " + ChatColor.YELLOW + defaultKit.getName() + ChatColor.GRAY + " ."));
+            event.getPlayer().sendMessage(notificationManager.getMessage("Equipped default kit " + ChatColor.YELLOW + defaultKit.getName() + ChatColor.GRAY + "."));
         }else{
             arcade.getDebugManager().print("default kit is null!");
         }
