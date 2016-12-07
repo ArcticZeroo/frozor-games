@@ -12,7 +12,7 @@ public class Knight extends PlayerKit {
         super("Knight", new String[] {"§7Hits hard, moves slow.", "", "§fYou Will Receive:", "§3•§Stone Sword", "§3•§fIron Helmet", "§3•§fIron Chestplate", "§3•§fIron Leggings", "§3•§fIron Boots", "§3•§fPermanent §aSlowness 1"}, new ItemStack(Material.IRON_SWORD));
 
         addStartingItems(new ItemStack[]{new ItemStack(Material.STONE_SWORD)});
-        setStartingArmor(new ItemStack[]{new ItemStack(Material.IRON_HELMET)});
+        setStartingArmor(ArmorSet.getArmorSet(ArmorSetType.IRON));
     }
 
     public void giveItems(Player player){
