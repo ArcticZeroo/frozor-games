@@ -4,18 +4,18 @@ import frozor.enums.GameState;
 import frozor.events.GameStateChangeEvent;
 import frozor.game.Game;
 import frozor.kits.PlayerKit;
-import frozor.managers.DebugManager;
-import frozor.managers.GameManager;
-import frozor.managers.KitManager;
-import frozor.managers.WaitingLobbyManager;
+import frozor.managers.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class Arcade implements Listener{
     //private GameManager gameManager;
     private KitManager kitManager;
     private DebugManager debugManager;
     private WaitingLobbyManager waitingLobbyManager;
+    private DamageManager damageManager;
+    private boolean allowRespawns = true;
 
     private GameState gameState = GameState.LOBBY;
 
@@ -29,6 +29,7 @@ public class Arcade implements Listener{
         //gameManager = new GameManager(this);
         kitManager = new KitManager(this, kits);
         waitingLobbyManager = new WaitingLobbyManager(this, 2, 3);
+        damageManager = new DamageManager(this);
     }
 
     public Game getPlugin() {
@@ -60,11 +61,14 @@ public class Arcade implements Listener{
         this.gameState = gameState;
     }
 
-    //Event Handlers
-
-    @EventHandler
-    public void onGameStateChange(GameStateChangeEvent event){
-        gameState = event.getGameState();
+    public void setAllowRespawns(boolean allowRespawns) {
+        this.allowRespawns = allowRespawns;
     }
 
+    //Event Handlers
+    @EventHandler
+    public void onGameStateChange(GameStateChangeEvent event){
+        //gameState = event.getGameState();
+        getDebugManager().print("Game state has been updated to " + event.getGameState());
+    }
 }
