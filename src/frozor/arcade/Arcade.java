@@ -15,7 +15,7 @@ public class Arcade implements Listener{
     private DebugManager debugManager;
     private WaitingLobbyManager waitingLobbyManager;
     private DamageManager damageManager;
-    private boolean allowRespawns = true;
+    private NotificationManager notificationManager = new NotificationManager("Game");
 
     private GameState gameState = GameState.LOBBY;
 
@@ -28,8 +28,8 @@ public class Arcade implements Listener{
         debugManager = new DebugManager(this);
         //gameManager = new GameManager(this);
         kitManager = new KitManager(this, kits);
-        waitingLobbyManager = new WaitingLobbyManager(this, 2, 3);
         damageManager = new DamageManager(this);
+        waitingLobbyManager = new WaitingLobbyManager(this);
     }
 
     public Game getPlugin() {
@@ -52,6 +52,22 @@ public class Arcade implements Listener{
         return debugManager;
     }
 
+    public DamageManager getDamageManager() {
+        return damageManager;
+    }
+
+    public KitManager getKitManager() {
+        return kitManager;
+    }
+
+    public WaitingLobbyManager getWaitingLobbyManager() {
+        return waitingLobbyManager;
+    }
+
+    public NotificationManager getNotificationManager() {
+        return notificationManager;
+    }
+
     public void setGameState(GameState gameState){
         GameStateChangeEvent event = new GameStateChangeEvent("Game state has been updated", gameState);
         event.callEvent();
@@ -59,10 +75,6 @@ public class Arcade implements Listener{
         if(event.isCancelled()) return;
 
         this.gameState = gameState;
-    }
-
-    public void setAllowRespawns(boolean allowRespawns) {
-        this.allowRespawns = allowRespawns;
     }
 
     //Event Handlers
