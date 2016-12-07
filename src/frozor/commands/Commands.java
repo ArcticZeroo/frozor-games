@@ -7,13 +7,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Commands implements CommandExecutor{
-    public Commands(Arcade arcade){
+    private Arcade arcade;
 
+    public Commands(Arcade arcade){
+        this.arcade = arcade;
+    }
+
+    private boolean handleFailedCommand(Player player, String message){
+        player.sendMessage(message);
+        return false;
     }
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if(!(commandSender instanceof Player)) return false;
+
+        Player player = (Player) commandSender;
 
         switch(command.getName().toLowerCase()){
             case "game":
@@ -31,6 +40,13 @@ public class Commands implements CommandExecutor{
                             return false;
                         }
                 }
+
+                break;
+
+            case "kit":
+                if(args.length < 2) return handleFailedCommand(player, arcade.getKitManager().getNotificationManager().getError("You did not specify a kit!"));
+
+
 
                 break;
 

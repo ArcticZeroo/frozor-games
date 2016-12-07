@@ -31,6 +31,10 @@ public class KitManager implements Listener{
         defaultKit = kits[0];
     }
 
+    public NotificationManager getNotificationManager() {
+        return notificationManager;
+    }
+
     public void setDefaultKit(PlayerKit defaultKit){
         this.defaultKit = defaultKit;
     }
@@ -51,6 +55,10 @@ public class KitManager implements Listener{
             UtilPlayer.cleanPlayer(player);
             selectedKit.giveItems(player);
         }
+    }
+
+    public void handleKitCommand(){
+
     }
 
     @EventHandler
