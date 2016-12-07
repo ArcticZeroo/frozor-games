@@ -7,9 +7,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Mage extends PlayerKit {
-    public Mage() {
-        super("Mage", new String[] {"§7Run at the speed of light!", "", "§fYou Will Receive:", "§3•§Wood Sword", "§3•§a64 §fARrows", "§3•§fChainmail Helmet", "§3•§fChainmail Chestplate", "§3•§fChainmail Leggings", "§3•§fChainmail Boots"}, new ItemStack(Material.BOW));
+public class FireMage extends PlayerKit {
+    public FireMage() {
+        super("Fire FireMage", new String[] {"§7Light the enemy ablaze!", "", "§fYou Will Receive:", "§3•§Wood Sword with §aFire Aspect I", "§3•§fLeather Helmet", "§3•§fLeather Chestplate", "§3•§fLeather Leggings", "§3•§fLeather Boots"}, new ItemStack(Material.BLAZE_ROD));
 
         ItemStack flameStaff = new ItemStack(Material.BLAZE_ROD);
 
