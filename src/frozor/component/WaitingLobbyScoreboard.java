@@ -68,7 +68,7 @@ public class WaitingLobbyScoreboard implements Listener{
 
     @EventHandler
     public void onWaitingTimeChange(WaitingTimeChangeEvent event){
-        waitingLobbyManager.getArcade().getDebugManager().print(event.getMessage());
+        //waitingLobbyManager.getArcade().getDebugManager().print(event.getMessage());
         scoreboardObjective.setDisplayName(String.format(ChatColor.AQUA + (ChatColor.BOLD + "Starting in %d seconds..."), event.getTime()));
     }
 
