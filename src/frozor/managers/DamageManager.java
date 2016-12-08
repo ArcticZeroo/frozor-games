@@ -6,6 +6,7 @@ import frozor.events.GameStateChangeEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -33,7 +34,7 @@ public class DamageManager implements Listener{
         }
     }
 
-    @EventHandler
+    @EventHandler(priority =  EventPriority.HIGHEST)
     public void onPlayerDeath(PlayerDeathEvent event){
         event.setDeathMessage("");
         event.getEntity().setHealth(20);
@@ -42,7 +43,7 @@ public class DamageManager implements Listener{
 
     @EventHandler
     public void onGameStateChange(GameStateChangeEvent event){
-        if(event.getGameState() == GameState.START){
+        if(event.getGameState() == GameState.PLAYING){
             setAllowPlayerDamage(arcade.getGame().getSettings().isPlayerDamageAllowed());
         }
     }
