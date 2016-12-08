@@ -16,7 +16,7 @@ public class Game extends JavaPlugin{
     protected Arcade arcade;
     protected String title;
     protected PlayerKit[] kits;
-    protected PlayerTeam teams;
+    protected PlayerTeam[] teams;
     protected NotificationManager notificationManager;
     protected GameSettings settings = new GameSettings();
 
@@ -26,9 +26,10 @@ public class Game extends JavaPlugin{
     private String gameWorldName;
     protected Location spawnLocation;
 
-    public Game(String title, PlayerKit[] kits, String gameWorldName){
+    public Game(String title, PlayerKit[] kits, PlayerTeam[] teams, String gameWorldName){
         this.title = title;
         this.kits = kits;
+        this.teams = teams;
 
         notificationManager = new NotificationManager(title);
 
