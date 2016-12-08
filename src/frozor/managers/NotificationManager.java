@@ -1,16 +1,21 @@
 package frozor.managers;
 
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 
 public class NotificationManager {
     private String prefix;
+    private ChatColor prefixColor = ChatColor.BLUE;
 
     public NotificationManager(String prefix){
         this.prefix = prefix;
     }
 
     public String getColoredPrefix(){
-        return ChatColor.BLUE + prefix + "> ";
+        return prefixColor + prefix + "> ";
+    }
+
+    public void setPrefixColor(ChatColor prefixColor) {
+        this.prefixColor = prefixColor;
     }
 
     public String getMessage(String message){
