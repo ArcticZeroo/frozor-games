@@ -1,17 +1,19 @@
 package frozor.commands;
 
 import frozor.arcade.Arcade;
+import frozor.managers.KitManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class Commands implements CommandExecutor{
+public class GameCommands implements CommandExecutor{
     private Arcade arcade;
 
-    public Commands(Arcade arcade){
+    public GameCommands(Arcade arcade){
         this.arcade = arcade;
     }
+
 
     private boolean handleFailedCommand(Player player, String message){
         player.sendMessage(message);
@@ -42,14 +44,6 @@ public class Commands implements CommandExecutor{
                 }
 
                 break;
-
-            case "kit":
-                if(args.length < 2) return handleFailedCommand(player, arcade.getKitManager().getNotificationManager().getError("You did not specify a kit!"));
-
-
-
-                break;
-
         }
 
         return false;
