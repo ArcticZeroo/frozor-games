@@ -6,6 +6,7 @@ import frozor.enums.GameState;
 import frozor.tasks.WaitingTimer;
 import frozor.util.UtilPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,22 +21,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class WaitingLobbyManager implements Listener{
     private Arcade arcade;
 
-    private int playerMin;
-    private int playerMax;
     private final int minTimer = 60;
     private final int maxTimer = 20;
-
 
     private WaitingTimer waitingTimer;
     private WaitingLobbyScoreboard waitingLobbyScoreboard;
 
     public WaitingLobbyManager(Arcade arcade) {
         this.arcade = arcade;
-        playerMin = arcade.getGame().getSettings().getPlayerMin();
-        playerMax = arcade.getGame().getSettings().getPlayerMax();
 
         arcade.RegisterEvents(this);
-        arcade.getDebugManager().print(String.format("Player Min: %s, Player Max: %s", playerMin, playerMax));
+        arcade.getDebugManager().print(String.format("Player Min: %s, Player Max: %s", getPlayerMin(), getPlayerMax()));
 
         waitingTimer = new WaitingTimer(arcade, minTimer);
         waitingLobbyScoreboard = new WaitingLobbyScoreboard(this);
@@ -44,11 +40,11 @@ public class WaitingLobbyManager implements Listener{
     }
 
     public int getPlayerMin(){
-        return playerMin;
+        return arcade.getGame().getSettings().getPlayerMin();
     }
 
     public int getPlayerMax(){
-        return playerMax;
+        return arcade.getGame().getSettings().getPlayerMax();
     }
 
     public WaitingTimer getWaitingTimer(){
@@ -66,20 +62,21 @@ public class WaitingLobbyManager implements Listener{
 
         event.getPlayer().setScoreboard(waitingLobbyScoreboard.getScoreboard());
         UtilPlayer.cleanPlayer(event.getPlayer());
+        event.getPlayer().teleport(arcade.getGame().getSpawnLocation());
 
         int onlineCount = Bukkit.getServer().getOnlinePlayers().size();
 
-        if(onlineCount >= playerMin && arcade.getGameState() == GameState.LOBBY){
+        if(onlineCount >= getPlayerMin() && arcade.getGameState() == GameState.LOBBY){
             //If there are at least minimum players, and the timer hasn't started yet
             waitingTimer.startTimer();
             arcade.setGameState(GameState.TIMER);
 
-        }else if(onlineCount == playerMax){
+        }else if(onlineCount == getPlayerMax()){
             //If players is max, check if the timer can be shortened and do so if it can
             if(waitingTimer.getTime() > maxTimer){
                 waitingTimer.setTime(maxTimer);
             }
-        }else if(onlineCount > playerMax){
+        }else if(onlineCount > getPlayerMax()){
             event.getPlayer().kickPlayer("This game is currently full.");
         }
     }
@@ -101,7 +98,7 @@ public class WaitingLobbyManager implements Listener{
     //Prevent Block Breaking
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event){
-        if(arcade.getGameState() != GameState.PLAYING){
+        if(arcade.getGameState() != GameState.PLAYING && event.getPlayer().getGameMode() != GameMode.CREATIVE){
             event.setCancelled(true);
         }
     }
