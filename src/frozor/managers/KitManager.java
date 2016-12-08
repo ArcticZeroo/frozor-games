@@ -9,7 +9,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -18,7 +20,8 @@ import java.util.UUID;
 
 public class KitManager implements Listener{
     private Arcade arcade;
-    private PlayerKit[] kits;
+    //private PlayerKit[] kits;
+    private HashMap<String, PlayerKit> kits = new HashMap<>();
     private PlayerKit defaultKit;
     private HashMap<UUID, PlayerKit> selectedKits = new HashMap<>();
     private NotificationManager notificationManager = new NotificationManager("Kit");
@@ -29,27 +32,33 @@ public class KitManager implements Listener{
         this.arcade.RegisterEvents(this);
 
         defaultKit = kits[0];
+
+        for(PlayerKit kit : kits){
+            addKit(kit);
+        }
     }
 
     public NotificationManager getNotificationManager() {
         return notificationManager;
     }
 
+    public void addKit(PlayerKit kit){
+        kits.put(kit.getName().toLowerCase(), kit);
+    }
+
     public void setDefaultKit(PlayerKit defaultKit){
-        this.defaultKit = defaultKit;
+        if(kits.containsValue(defaultKit)){
+            this.defaultKit = defaultKit;
+        }
     }
 
     public void selectKit(UUID uuid, PlayerKit kit){
         selectedKits.put(uuid, kit);
     }
 
-    public void assignPlayerKits(){
-        arcade.getDebugManager().print("Assigning player kits...");
-        for(UUID uuid : selectedKits.keySet()){
+    public void giveKit(UUID uuid){
+        if(selectedKits.containsKey(uuid)){
             PlayerKit selectedKit = selectedKits.get(uuid);
-
-            arcade.getDebugManager().print("Assigning " + selectedKit.getName() + " to " + uuid.toString());
-
             Player player = Bukkit.getPlayer(uuid);
 
             UtilPlayer.cleanPlayer(player);
@@ -57,18 +66,39 @@ public class KitManager implements Listener{
         }
     }
 
-    public void handleKitCommand(){
+    public void giveKit(Player player){
+        if(selectedKits.containsKey(player.getUniqueId())){
+            PlayerKit selectedKit = selectedKits.get(player.getUniqueId());
 
+            UtilPlayer.cleanPlayer(player);
+            selectedKit.giveItems(player);
+        }
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event){
-        if(defaultKit != null){
-            selectKit(event.getPlayer().getUniqueId(), defaultKit);
-            event.getPlayer().sendMessage(notificationManager.getMessage("Equipped default kit " + ChatColor.YELLOW + defaultKit.getName() + ChatColor.GRAY + "."));
-        }else{
-            arcade.getDebugManager().print("default kit is null!");
+    public void assignPlayerKits(){
+        arcade.getDebugManager().print("Assigning player kits...");
+        for(UUID uuid : selectedKits.keySet()){
+            giveKit(uuid);
         }
+    }
+
+    public HashMap<UUID, PlayerKit> getSelectedKits() {
+        return selectedKits;
+    }
+
+    public HashMap<String, PlayerKit> getKits() {
+        return kits;
+    }
+
+    public void handlePlayerJoin(Player player){
+        if(defaultKit != null){
+            selectKit(player.getUniqueId(), defaultKit);
+            player.sendMessage(notificationManager.getMessage("Equipped default kit " + ChatColor.YELLOW + defaultKit.getName() + ChatColor.GRAY + "."));
+        }
+    }
+    
+    public void handleKitCommand(){
+
     }
 
     @EventHandler
@@ -84,5 +114,10 @@ public class KitManager implements Listener{
         if(event.getGameState() == GameState.START){
             assignPlayerKits();
         }
+    }
+
+    @EventHandler(priority =  EventPriority.NORMAL)
+    public void onPlayerDeath(PlayerDeathEvent event){
+        giveKit(event.getEntity());
     }
 }
