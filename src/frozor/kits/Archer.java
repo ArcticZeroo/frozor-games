@@ -15,5 +15,6 @@ public class Archer extends PlayerKit {
         arrows.setAmount(64);
 
         addStartingItems(new ItemStack[]{new ItemStack(Material.WOOD_SWORD), new ItemStack(Material.BOW), arrows});
+        setStartingArmor(ArmorSet.getArmorSet(ArmorSetType.CHAINMAIL));
     }
 }
