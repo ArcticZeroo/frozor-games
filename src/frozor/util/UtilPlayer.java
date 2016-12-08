@@ -14,7 +14,12 @@ public class UtilPlayer {
         player.setFoodLevel(20);
         player.setSaturation(1.0F);
         player.getInventory().clear();
-        player.getInventory().setArmorContents(new ItemStack[]{});
+
+        player.getInventory().setHelmet(null);
+        player.getInventory().setChestplate(null);
+        player.getInventory().setLeggings(null);
+        player.getInventory().setBoots(null);
+
         Collection<PotionEffect> ActiveEffects = player.getActivePotionEffects();
         if(ActiveEffects.size() > 0){
             for(PotionEffect effect : ActiveEffects){
