@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scoreboard.*;
 
 import java.util.Set;
@@ -37,6 +38,10 @@ public class WaitingLobbyScoreboard implements Listener{
         return waitingLobbyManager.getArcade().getPlugin().getServer().getOnlinePlayers().size() + "/" + waitingLobbyManager.getPlayerMax();
     }
 
+    private void updatePlayerCount(){
+        scoreboardTeam.setPrefix(getOnlineString());
+    }
+
     public void setWaiting(){
         scoreboardObjective.setDisplayName(ChatColor.AQUA + (ChatColor.BOLD + "Waiting for players..."));
     }
@@ -48,16 +53,22 @@ public class WaitingLobbyScoreboard implements Listener{
         scoreboardObjective.setDisplaySlot(DisplaySlot.SIDEBAR);
         setWaiting();
 
-        addScoreboardRow("§f");
+        addScoreboardRow(ChatColor.WHITE.toString());
         addScoreboardRow(ChatColor.GOLD + (ChatColor.BOLD + "Game"));
         addScoreboardRow(waitingLobbyManager.getArcade().getGame().getTitle());
-        addScoreboardRow("§l");
-        addScoreboardRow(ChatColor.GREEN + (ChatColor.BOLD + "Min Players"));
+        addScoreboardRow(ChatColor.BOLD.toString());
+        /*addScoreboardRow(ChatColor.GREEN + (ChatColor.BOLD + "Min Players"));
         addScoreboardRow(Integer.toString(waitingLobbyManager.getPlayerMin()));
         addScoreboardRow("§a");
         addScoreboardRow(ChatColor.DARK_GREEN + (ChatColor.BOLD + "Max Players"));
         addScoreboardRow(Integer.toString(waitingLobbyManager.getPlayerMax()));
-        addScoreboardRow("§c");
+        addScoreboardRow("§c");*/
+
+        addScoreboardRow(ChatColor.GREEN + (ChatColor.BOLD + "Players"));
+        scoreboardTeam = scoreboard.registerNewTeam("sbPlayerCount");
+        scoreboardTeam.addEntry(ChatColor.AQUA.toString());
+        scoreboardObjective.getScore(ChatColor.AQUA.toString()).setScore(getNextScoreboardSlot());
+        updatePlayerCount();
 
         waitingLobbyManager.getArcade().RegisterEvents(this);
     }
@@ -79,5 +90,10 @@ public class WaitingLobbyScoreboard implements Listener{
         }else if(event.getGameState() == GameState.TIMER){
             scoreboardObjective.setDisplayName(String.format(ChatColor.AQUA + (ChatColor.BOLD + "Starting in %d seconds..."), waitingLobbyManager.getWaitingTimer().getStartTime()));
         }
+    }
+
+    @EventHandler
+    public void onLogin(PlayerJoinEvent event){
+        updatePlayerCount();
     }
 }
