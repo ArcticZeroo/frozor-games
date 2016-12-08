@@ -1,13 +1,19 @@
 package frozor.arcade;
 
+import frozor.commands.GameCommands;
+import frozor.commands.KitCommands;
 import frozor.enums.GameState;
 import frozor.events.GameStateChangeEvent;
 import frozor.game.Game;
 import frozor.kits.PlayerKit;
 import frozor.managers.*;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class Arcade implements Listener{
     //private GameManager gameManager;
@@ -16,6 +22,7 @@ public class Arcade implements Listener{
     private WaitingLobbyManager waitingLobbyManager;
     private DamageManager damageManager;
     private NotificationManager notificationManager = new NotificationManager("Game");
+    private NotificationManager joinNotificationManager = new NotificationManager("Join");
 
     private GameState gameState = GameState.LOBBY;
 
@@ -30,6 +37,11 @@ public class Arcade implements Listener{
         kitManager = new KitManager(this, kits);
         damageManager = new DamageManager(this);
         waitingLobbyManager = new WaitingLobbyManager(this);
+
+        plugin.getCommand("kit").setExecutor(new KitCommands(this));
+        plugin.getCommand("game").setExecutor(new GameCommands(this));
+
+        joinNotificationManager.setPrefixColor(ChatColor.DARK_GRAY);
     }
 
     public Game getPlugin() {
@@ -82,5 +94,17 @@ public class Arcade implements Listener{
     public void onGameStateChange(GameStateChangeEvent event){
         //gameState = event.getGameState();
         getDebugManager().print("Game state has been updated to " + event.getGameState());
+    }
+
+    @EventHandler
+    public void onPlayerLogin(PlayerJoinEvent event){
+        event.setJoinMessage("");
+        getPlugin().getServer().broadcastMessage(joinNotificationManager.getMessage(event.getPlayer().getName()));
+        kitManager.handlePlayerJoin(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event){
+        event.setQuitMessage("");
     }
 }
