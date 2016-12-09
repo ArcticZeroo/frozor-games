@@ -1,11 +1,9 @@
 package frozor.component;
 
 import frozor.arcade.Arcade;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.*;
 
 public class FrozorScoreboard {
     private Arcade arcade;
@@ -21,17 +19,22 @@ public class FrozorScoreboard {
     }
 
     public FrozorScoreboard(Arcade arcade, String scoreboardName){
-        ScoreboardManager scoreboardManager = arcade.getPlugin().getServer().getScoreboardManager();
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
         scoreboard = scoreboardManager.getNewScoreboard();
         objective = scoreboard.registerNewObjective(scoreboardName, "dummy");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         for(int i = -1; i >= teams.length*-1; i--){
-            teams[i] = scoreboard.registerNewTeam(scoreboardName+"-team-"+i);
+            teams[i] = scoreboard.registerNewTeam("team-"+i);
 
             String scoreName = scoreNames[i].toString();
             teams[i].addEntry(scoreName);
             objective.getScore(scoreName).setScore(i);
         }
+    }
+
+    public Objective getObjective() {
+        return objective;
     }
 
     public Scoreboard getScoreboard() {
