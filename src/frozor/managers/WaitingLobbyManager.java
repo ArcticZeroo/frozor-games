@@ -1,11 +1,13 @@
 package frozor.managers;
 
 import frozor.arcade.Arcade;
+import frozor.component.FrozorScoreboard;
 import frozor.component.WaitingLobbyScoreboard;
 import frozor.enums.GameState;
 import frozor.tasks.WaitingTimer;
 import frozor.util.UtilPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -25,7 +27,7 @@ public class WaitingLobbyManager implements Listener{
     private final int maxTimer = 20;
 
     private WaitingTimer waitingTimer;
-    private WaitingLobbyScoreboard waitingLobbyScoreboard;
+    private FrozorScoreboard waitingLobbyScoreboard;
 
     public WaitingLobbyManager(Arcade arcade) {
         this.arcade = arcade;
@@ -34,7 +36,13 @@ public class WaitingLobbyManager implements Listener{
         arcade.getDebugManager().print(String.format("Player Min: %s, Player Max: %s", getPlayerMin(), getPlayerMax()));
 
         waitingTimer = new WaitingTimer(arcade, minTimer);
-        waitingLobbyScoreboard = new WaitingLobbyScoreboard(this);
+        //waitingLobbyScoreboard = new WaitingLobbyScoreboard(this);
+        waitingLobbyScoreboard = new FrozorScoreboard(arcade, "lobbyScoreboard");
+        waitingLobbyScoreboard.getObjective().setDisplayName(ChatColor.AQUA + "Waiting for players...");
+        waitingLobbyScoreboard.setLine(0, "Line 1 Text");
+        waitingLobbyScoreboard.setLine(1, "Line 2 Text");
+        waitingLobbyScoreboard.setLine(2, "Line 3 Text");
+        waitingLobbyScoreboard.setLine(3, "Line 4 Text");
 
         arcade.getDamageManager().setAllowPlayerDamage(false);
     }
@@ -89,7 +97,8 @@ public class WaitingLobbyManager implements Listener{
         if(arcade.getGameState() == GameState.TIMER){
             if(Bukkit.getServer().getOnlinePlayers().size() < getPlayerMin()){
                 waitingTimer.reset();
-                waitingLobbyScoreboard.setWaiting();
+                //TODO: Fix this  ¯\_(ツ)_/¯
+                //waitingLobbyScoreboard.setWaiting();
                 arcade.setGameState(GameState.LOBBY);
             }
         }
