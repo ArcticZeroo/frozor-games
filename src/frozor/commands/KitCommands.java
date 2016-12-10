@@ -26,9 +26,6 @@ public class KitCommands implements CommandExecutor{
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        arcade.getDebugManager().print("Kit command!");
-        arcade.getDebugManager().print(label);
-
         if(!(commandSender instanceof Player)) return false;
 
         Player player = (Player) commandSender;
