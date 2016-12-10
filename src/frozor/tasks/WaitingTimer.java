@@ -2,7 +2,6 @@ package frozor.tasks;
 
 import frozor.arcade.Arcade;
 import frozor.enums.GameState;
-import frozor.events.GameStateChangeEvent;
 import frozor.events.WaitingTimeChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -48,6 +47,7 @@ public class WaitingTimer extends BukkitRunnable{
     public void startTimer(){
         active = true;
         this.runTaskTimer(arcade.getPlugin(), 20L, 20L);
+        arcade.setGameState(GameState.TIMER);
     }
 
     @Override
