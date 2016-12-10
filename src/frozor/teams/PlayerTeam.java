@@ -2,17 +2,27 @@ package frozor.teams;
 
 import groovyjarjarcommonscli.Option;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 public class PlayerTeam {
-    protected String teamName;
-    protected ChatColor teamColor;
-    protected Team scoreboardTeam;
+    private String teamName;
+    private ChatColor teamColor;
+    private Team scoreboardTeam;
+    private Location[] teamSpawns;
 
     public PlayerTeam(String displayName, ChatColor teamColor){
         this.teamName = displayName;
         this.teamColor = teamColor;
+    }
+
+    public void setTeamSpawns(Location[] teamSpawns) {
+        this.teamSpawns = teamSpawns;
+    }
+
+    public Location[] getTeamSpawns() {
+        return teamSpawns;
     }
 
     public String getTeamName() {
@@ -25,7 +35,7 @@ public class PlayerTeam {
 
     public void register(Scoreboard scoreboard){
         scoreboardTeam = scoreboard.registerNewTeam(teamName);
-        scoreboardTeam.setPrefix(ChatColor.BLUE.toString());
+        scoreboardTeam.setPrefix(getTeamColor().toString());
     }
 
     public Team getScoreboardTeam() {
