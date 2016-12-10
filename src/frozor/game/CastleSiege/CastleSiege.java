@@ -26,7 +26,7 @@ public class CastleSiege extends Game implements Listener{
     private CastleKingRegen castleKingRegen;
 
     public CastleSiege(){
-        super("Castle Siege", new PlayerKit[]{new Knight(), new Archer(), new Scout(), new FireMage()}, new PlayerTeam[]{new PlayerTeam("Blue", ChatColor.BLUE), new PlayerTeam("Blue", ChatColor.RED)}, "rivendale");
+        super("Castle Siege", new PlayerKit[]{new Knight(), new Archer(), new Scout(), new FireMage()}, new PlayerTeam[]{new PlayerTeam("Blue", ChatColor.BLUE), new PlayerTeam("Red", ChatColor.RED)}, "rivendale");
 
         getSettings().setPlayerMin(2);
         getSettings().setPlayerMax(3);
