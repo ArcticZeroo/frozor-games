@@ -6,7 +6,7 @@ import org.bukkit.Location;
 public class DatapointParser {
 
     public static Location parse(String point){
-        int[] coordinates = toIntArray(point);
+        double[] coordinates = toDoubleArray(point);
         return new Location(Bukkit.getWorlds().get(0), coordinates[0], coordinates[1], coordinates[2]);
     }
 
@@ -21,6 +21,15 @@ public class DatapointParser {
         int z = Integer.parseInt(coordinates[2]);
 
         return new int[]{x, y, z};
+    }
+
+    public static double[] toDoubleArray(String point){
+        String[] coordinates = toStringArray(point);
+        double x = Double.parseDouble(coordinates[0]);
+        double y = Double.parseDouble(coordinates[1]);
+        double z = Double.parseDouble(coordinates[2]);
+
+        return new double[]{x, y, z};
     }
 
 }
