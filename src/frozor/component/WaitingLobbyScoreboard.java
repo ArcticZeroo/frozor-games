@@ -73,6 +73,10 @@ public class WaitingLobbyScoreboard implements Listener{
         waitingLobbyManager.getArcade().RegisterEvents(this);
     }
 
+    public void clearSidebar(){
+        scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+    }
+
     public Scoreboard getScoreboard() {
         return scoreboard;
     }
