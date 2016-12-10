@@ -9,10 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scoreboard.*;
-
-import java.util.Set;
 
 public class WaitingLobbyScoreboard implements Listener{
     private ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
