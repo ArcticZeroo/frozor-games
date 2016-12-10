@@ -12,20 +12,15 @@ public class FrozorScoreboard {
     private ChatColor[] scoreNames = {ChatColor.AQUA, ChatColor.BLACK, ChatColor.BLUE, ChatColor.DARK_AQUA, ChatColor.DARK_GRAY, ChatColor.DARK_GREEN, ChatColor.DARK_PURPLE, ChatColor.DARK_RED, ChatColor.GOLD, ChatColor.GRAY, ChatColor.GREEN, ChatColor.LIGHT_PURPLE, ChatColor.RED, ChatColor.WHITE, ChatColor.YELLOW, ChatColor.BOLD};
     private Team[] teams = new Team[16];
 
-    private int nextScoreboardSlot = -1;
-
-    private int getNextScoreboardSlot(){
-        return nextScoreboardSlot--;
-    }
-
     public FrozorScoreboard(Arcade arcade, String scoreboardName){
         ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
         scoreboard = scoreboardManager.getNewScoreboard();
         objective = scoreboard.registerNewObjective(scoreboardName, "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objective.setDisplayName(scoreboardName);
 
         for(int i = -1; i >= teams.length*-1; i--){
-            teams[i] = scoreboard.registerNewTeam("team-"+i);
+            teams[i] = scoreboard.registerNewTeam("fsbTeam-"+i);
 
             String scoreName = scoreNames[i].toString();
             teams[i].addEntry(scoreName);
