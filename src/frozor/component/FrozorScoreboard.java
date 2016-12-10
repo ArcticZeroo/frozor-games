@@ -1,5 +1,6 @@
 package frozor.component;
 
+import clojure.lang.Obj;
 import frozor.arcade.Arcade;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,14 +19,6 @@ public class FrozorScoreboard {
         objective = scoreboard.registerNewObjective(scoreboardName, "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         objective.setDisplayName(scoreboardName);
-
-        for(int i = -1; i >= teams.length*-1; i--){
-            teams[i] = scoreboard.registerNewTeam("fsbTeam-"+i);
-
-            String scoreName = scoreNames[i].toString();
-            teams[i].addEntry(scoreName);
-            objective.getScore(scoreName).setScore(i);
-        }
     }
 
     public Objective getObjective() {
@@ -36,7 +29,72 @@ public class FrozorScoreboard {
         return scoreboard;
     }
 
+    private String getScoreName(int i){
+        return scoreNames[i].toString();
+    }
+
+    private void createTeam(int i){
+        teams[i] = scoreboard.registerNewTeam("fsbTeam-"+i);
+
+        String scoreName = getScoreName(i);
+        teams[i].addEntry(scoreName);
+        objective.getScore(scoreName).setScore(-1-i);
+    }
+
+    public void setBlankLine(int index){
+        setLine(index, "");
+    }
+
     public void setLine(int index, String text){
+        if(teams[index] == null){
+            createTeam(index);
+        }
+
         teams[index].setPrefix(text);
+    }
+
+    public void clearSidebar(){
+        getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+    }
+
+    private void unregisterTeams(){
+        for(int i = 0; i < teams.length; i++){
+            if(teams[i] == null) continue;
+
+            teams[i].unregister();
+        }
+    }
+
+    private void clearOldObjective(){
+        clearSidebar();
+        objective.unregister();
+        unregisterTeams();
+        teams = new Team[16];
+    }
+
+    private void makeNewSidebarObjective(Objective newSidebarObjective){
+        clearOldObjective();
+        objective = newSidebarObjective;
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        objective.setDisplayName(newSidebarObjective.getDisplayName());
+    }
+
+    public Objective setNewSidebarObjective(Objective newSidebarObjective){
+        makeNewSidebarObjective(newSidebarObjective);
+        return objective;
+    }
+
+    public Objective setNewSidebarObjective(String objectiveName){
+        makeNewSidebarObjective(scoreboard.registerNewObjective(objectiveName, "dummy"));
+        return objective;
+    }
+
+    public Objective setNewSidebarObjective(String objectiveName, String objectiveType){
+        makeNewSidebarObjective(scoreboard.registerNewObjective(objectiveName, objectiveType));
+        return objective;
+    }
+
+    public void setDisplayName(String displayName){
+        getObjective().setDisplayName(displayName);
     }
 }
