@@ -24,6 +24,7 @@ public class Game extends JavaPlugin{
     protected FileConfiguration mapConfig = customConfig.getConfig();
 
     private String gameWorldName;
+    private World gameWorld;
     protected Location spawnLocation;
 
     public Game(String title, PlayerKit[] kits, PlayerTeam[] teams, String gameWorldName){
@@ -33,24 +34,26 @@ public class Game extends JavaPlugin{
 
         notificationManager = new NotificationManager(title);
 
-        //int[] spawnCoords = DatapointParser.toIntArray(mapConfig.getString("spawns.Lobby"));
-
-        //getServer().getWorlds().get(0).setSpawnLocation(spawnCoords[0], spawnCoords[1], spawnCoords[2]);
-
         this.gameWorldName = gameWorldName;
     }
 
     public void onEnable(){
-        arcade = new Arcade(this, kits);
+        gameWorld = Bukkit.getWorld(gameWorldName);
 
         String lobbySpawn = mapConfig.getString("spawns.Lobby");
 
         spawnLocation = DatapointParser.parse(lobbySpawn);
+
+        arcade = new Arcade(this, kits);
     }
 
 
     public Location getSpawnLocation() {
         return spawnLocation;
+    }
+
+    public World getGameWorld() {
+        return gameWorld;
     }
 
     public NotificationManager getNotificationManager() {
@@ -72,4 +75,10 @@ public class Game extends JavaPlugin{
     public FileConfiguration getMapConfig() {
         return mapConfig;
     }
+
+    public Arcade getArcade() {
+        return arcade;
+    }
+
+    public void onStart(){}
 }
