@@ -2,6 +2,7 @@ package frozor.arcade;
 
 import frozor.commands.GameCommands;
 import frozor.commands.KitCommands;
+import frozor.component.FrozorScoreboard;
 import frozor.enums.GameState;
 import frozor.events.GameStateChangeEvent;
 import frozor.game.Game;
@@ -23,6 +24,7 @@ public class Arcade implements Listener{
     private DamageManager damageManager;
     private NotificationManager notificationManager = new NotificationManager("Game");
     private NotificationManager joinNotificationManager = new NotificationManager("Join");
+    private FrozorScoreboard scoreboard;
 
     private GameState gameState = GameState.LOBBY;
 
@@ -30,13 +32,14 @@ public class Arcade implements Listener{
 
     public Arcade(Game plugin, PlayerKit[] kits){
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        RegisterEvents(this);
 
         debugManager = new DebugManager(this);
         //gameManager = new GameManager(this);
         kitManager = new KitManager(this, kits);
         damageManager = new DamageManager(this);
         waitingLobbyManager = new WaitingLobbyManager(this);
+        scoreboard = new FrozorScoreboard(this, "arcadeSb");
 
         plugin.getCommand("kit").setExecutor(new KitCommands(this));
         plugin.getCommand("game").setExecutor(new GameCommands(this));
@@ -54,6 +57,10 @@ public class Arcade implements Listener{
 
     public void RegisterEvents(Listener listener){
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+    }
+
+    public FrozorScoreboard getGameScoreboard() {
+        return scoreboard;
     }
 
     public GameState getGameState(){
