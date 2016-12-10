@@ -14,6 +14,8 @@ public class UtilPlayer {
         player.setFoodLevel(20);
         player.setSaturation(1.0F);
         player.getInventory().clear();
+        player.setExp(0F);
+        player.setLevel(0);
 
         player.getInventory().setHelmet(null);
         player.getInventory().setChestplate(null);
