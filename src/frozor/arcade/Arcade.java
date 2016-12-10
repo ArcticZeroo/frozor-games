@@ -9,6 +9,7 @@ import frozor.events.GameStateChangeEvent;
 import frozor.game.Game;
 import frozor.kits.PlayerKit;
 import frozor.managers.*;
+import frozor.teams.PlayerTeam;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class Arcade implements Listener{
     //private GameManager game`Manager;
+    private TeamManager teamManager;
     private KitManager kitManager;
     private DebugManager debugManager;
     private WaitingLobbyManager waitingLobbyManager;
@@ -34,13 +36,14 @@ public class Arcade implements Listener{
 
     private Game plugin;
 
-    public Arcade(Game plugin, PlayerKit[] kits){
+    public Arcade(Game plugin, PlayerKit[] kits, PlayerTeam[] teams){
         this.plugin = plugin;
         RegisterEvents(this);
 
         scoreboard = new FrozorScoreboard(this, "arcadeSb");
         debugManager = new DebugManager(this);
         //gameManager = new GameManager(this);
+        teamManager = new TeamManager(this, teams);
         kitManager = new KitManager(this, kits);
         damageManager = new DamageManager(this);
         waitingLobbyManager = new WaitingLobbyManager(this);
@@ -98,16 +101,17 @@ public class Arcade implements Listener{
         return notificationManager;
     }
 
+    public TeamManager getTeamManager() {
+        return teamManager;
+    }
+
     public void setGameState(GameState gameState){
         getDebugManager().print("Updating game state to " + gameState.toString());
 
         GameStateChangeEvent event = new GameStateChangeEvent("Game state has been updated", gameState);
         event.callEvent();
 
-        if(event.isCancelled()){
-            getDebugManager().print("Game state event was cancelled");
-            return;
-        }
+        if(event.isCancelled()) return;
 
         this.gameState = gameState;
     }
@@ -124,6 +128,9 @@ public class Arcade implements Listener{
     public void onGameStateChange(GameStateChangeEvent event){
         if(event.getGameState() == GameState.START){
             getGame().onStart();
+            teamManager.teleportPlayers();
+        }else if(event.getGameState() == GameState.TIMER){
+            teamManager.assignTeams();
         }
     }
 
@@ -132,6 +139,10 @@ public class Arcade implements Listener{
         event.setJoinMessage("");
         getPlugin().getServer().broadcastMessage(joinNotificationManager.getMessage(event.getPlayer().getName()));
         kitManager.handlePlayerJoin(event.getPlayer());
+
+        if(getGameState() == GameState.TIMER){
+            teamManager.assignPlayer(event.getPlayer());
+        }
     }
 
     @EventHandler

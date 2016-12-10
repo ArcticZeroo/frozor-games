@@ -44,7 +44,7 @@ public class Game extends JavaPlugin{
 
         spawnLocation = DatapointParser.parse(lobbySpawn);
 
-        arcade = new Arcade(this, kits);
+        arcade = new Arcade(this, kits, teams);
     }
 
 
