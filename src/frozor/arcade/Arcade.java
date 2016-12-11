@@ -11,12 +11,23 @@ import frozor.kits.PlayerKit;
 import frozor.managers.*;
 import frozor.teams.PlayerTeam;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EnchantingInventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Dye;
 import org.bukkit.scoreboard.Objective;
 
 import java.util.List;
@@ -135,10 +146,11 @@ public class Arcade implements Listener{
     }
 
     @EventHandler
-    public void onPlayerLogin(PlayerJoinEvent event){
+    public void onPlayerJoin(PlayerJoinEvent event){
         event.setJoinMessage("");
         getPlugin().getServer().broadcastMessage(joinNotificationManager.getMessage(event.getPlayer().getName()));
         kitManager.handlePlayerJoin(event.getPlayer());
+        event.getPlayer().setScoreboard(getGameScoreboard().getScoreboard());
 
         if(getGameState() == GameState.TIMER){
             teamManager.assignPlayer(event.getPlayer());
@@ -148,5 +160,46 @@ public class Arcade implements Listener{
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
         event.setQuitMessage("");
+    }
+
+
+    private void addLapis(EnchantingInventory inventory){
+        Dye lapisDye = new Dye();
+        lapisDye.setColor(DyeColor.BLUE);
+        ItemStack lapis = lapisDye.toItemStack();
+        lapis.setAmount(5);
+
+        inventory.setItem(1, lapis);
+    }
+
+    @EventHandler
+    public void onItemEnchant(EnchantItemEvent event){
+        EnchantingInventory inventory = (EnchantingInventory) event.getInventory();
+        addLapis(inventory);
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event){
+        if(getGameState() != GameState.PLAYING) event.setCancelled(true);
+        if(event.getInventory().getType() == InventoryType.ENCHANTING){
+            EnchantingInventory inventory = (EnchantingInventory) event.getInventory();
+            addLapis(inventory);
+        }
+    }
+
+    @EventHandler
+    public void onLapisClick(InventoryClickEvent event){
+        if(event.getInventory().getType() == InventoryType.ENCHANTING){
+            if(event.getCursor().getType() == Material.INK_SACK){
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEnchantmentTableClose(InventoryCloseEvent event){
+        if(event.getInventory().getType() == InventoryType.ENCHANTING){
+            event.getInventory().remove(Material.INK_SACK);
+        }
     }
 }
