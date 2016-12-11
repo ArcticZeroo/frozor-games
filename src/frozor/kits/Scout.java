@@ -1,6 +1,8 @@
 package frozor.kits;
 
 
+import frozor.itemstack.ArmorSet;
+import frozor.itemstack.ArmorSetType;
 import frozor.util.UtilItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,7 +14,7 @@ public class Scout extends PlayerKit {
     public Scout() {
         super("Scout", new String[] {"§7Run at the speed of light!", "", "§fYou Will Receive:", "§3•§Wood Sword", "§3•§a2 §fSpeed 2 Potion", "§3•§fLeather Helmet", "§3•§fLeather Chestplate", "§3•§fLeather Leggings", "§3•§fLeather Boots", "§3•§fPermanent §aWeakness 1"}, new ItemStack(Material.SUGAR));
 
-        addStartingItems(new ItemStack[]{new ItemStack(Material.WOOD_SWORD), new ItemStack(Material.ENDER_PEARL, 2)});
+        addStartingItems(new ItemStack[]{UtilItem.createUnbreakableItem(Material.WOOD_SWORD), new ItemStack(Material.ENDER_PEARL, 2)});
 
         ItemStack[] armorSet = ArmorSet.getArmorSet(ArmorSetType.LEATHER);
         for(ItemStack armorPiece : armorSet){

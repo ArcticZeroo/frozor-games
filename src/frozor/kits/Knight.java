@@ -1,6 +1,9 @@
 package frozor.kits;
 
 
+import frozor.itemstack.ArmorSet;
+import frozor.itemstack.ArmorSetType;
+import frozor.util.UtilItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +14,7 @@ public class Knight extends PlayerKit {
     public Knight() {
         super("Knight", new String[] {"§7Hits hard, moves slow.", "", "§fYou Will Receive:", "§3•§Stone Sword", "§3•§fIron Helmet", "§3•§fIron Chestplate", "§3•§fIron Leggings", "§3•§fIron Boots", "§3•§fPermanent §aSlowness 1"}, new ItemStack(Material.IRON_SWORD));
 
-        addStartingItems(new ItemStack[]{new ItemStack(Material.STONE_SWORD)});
+        addStartingItems(new ItemStack[]{UtilItem.createUnbreakableItem(Material.STONE_SWORD)});
         setStartingArmor(ArmorSet.getArmorSet(ArmorSetType.IRON));
     }
 

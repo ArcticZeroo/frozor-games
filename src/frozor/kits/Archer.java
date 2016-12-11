@@ -1,11 +1,11 @@
 package frozor.kits;
 
 
+import frozor.itemstack.ArmorSet;
+import frozor.itemstack.ArmorSetType;
+import frozor.util.UtilItem;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class Archer extends PlayerKit {
     public Archer() {
@@ -14,7 +14,7 @@ public class Archer extends PlayerKit {
         ItemStack arrows = new ItemStack(Material.ARROW);
         arrows.setAmount(64);
 
-        addStartingItems(new ItemStack[]{new ItemStack(Material.WOOD_SWORD), new ItemStack(Material.BOW), arrows});
+        addStartingItems(new ItemStack[]{UtilItem.createUnbreakableItem(Material.WOOD_SWORD), UtilItem.createUnbreakableItem(Material.BOW), arrows});
         setStartingArmor(ArmorSet.getArmorSet(ArmorSetType.CHAINMAIL));
     }
 }
