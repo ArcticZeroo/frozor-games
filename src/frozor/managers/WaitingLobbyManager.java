@@ -91,7 +91,6 @@ public class WaitingLobbyManager implements Listener{
 
         //Scoreboard magic
         updatePlayerCount();
-        event.getPlayer().setScoreboard(arcade.getGameScoreboard().getScoreboard());
 
         //Deal with timer bull
         int onlineCount = Bukkit.getServer().getOnlinePlayers().size();
