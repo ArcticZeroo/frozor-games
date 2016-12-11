@@ -1,16 +1,13 @@
 package frozor.game.CastleSiege;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import frozor.component.DatapointParser;
-import frozor.kits.ArmorSet;
-import frozor.kits.ArmorSetType;
-import frozor.teams.PlayerTeam;
+import frozor.itemstack.ArmorSet;
+import frozor.itemstack.ArmorSetType;
 import frozor.util.UtilEnt;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
 
