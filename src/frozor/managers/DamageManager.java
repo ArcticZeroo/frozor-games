@@ -16,7 +16,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class DamageManager implements Listener{
     private Arcade arcade;
-    private NotificationManager deathNotificationManager = new NotificationManager("Death");
+    private NotificationManager notificationManager = new NotificationManager("Death");
 
     private boolean allowPlayerDamage = true;
 
@@ -45,13 +45,37 @@ public class DamageManager implements Listener{
 
     }
 
+    private String getNameWithTeamColor(Player player){
+        PlayerTeam playerTeam = arcade.getTeamManager().getPlayerTeam(player);
+        return playerTeam.getTeamColor() + player.getName();
+    }
+
     @EventHandler(priority =  EventPriority.HIGHEST)
     public void onPlayerDeath(PlayerDeathEvent event){
-        event.setDeathMessage(deathNotificationManager.getMessage(event.getEntity().getDisplayName() + ChatColor.GRAY + " killed by " + event.getEntity().getLastDamageCause().getEntity().getName()));
+        Player player = event.getEntity();
+
+        String killer = "Unknown";
+
+        switch(event.getEntity().getLastDamageCause().getCause()){
+            case ENTITY_ATTACK:
+                killer = getNameWithTeamColor(player.getKiller());
+                break;
+            case BLOCK_EXPLOSION:
+            case ENTITY_EXPLOSION:
+                killer = "Explosion";
+                break;
+            case FALL:
+                killer = "Fall";
+                break;
+            case DROWNING:
+                killer = "Drowning";
+                break;
+        }
+        event.setDeathMessage(notificationManager.getMessage(getNameWithTeamColor(player) + ChatColor.GRAY + " was killed by " + ChatColor.YELLOW + killer + ChatColor.GRAY + "."));
+
         event.getEntity().setHealth(20);
 
         event.getEntity().teleport(arcade.getTeamManager().getTeamSpawn(event.getEntity()));
-        //arcade.getPlugin().getServer().broadcastMessage(deathNotificationManager.getMessage(event.getEntity().getDisplayName() + ChatColor.GRAY + " killed by " + event.getEntity().getLastDamageCause().getEntity().getName()));
     }
 
     @EventHandler
