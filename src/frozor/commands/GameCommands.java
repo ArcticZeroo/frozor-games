@@ -17,7 +17,6 @@ public class GameCommands implements CommandExecutor{
         this.arcade = arcade;
     }
 
-
     private boolean handleFailedCommand(Player player, String message){
         player.sendMessage(notificationManager.getError(message));
         return true;
@@ -54,8 +53,11 @@ public class GameCommands implements CommandExecutor{
                             int newTime = Integer.parseInt(args[1]);
 
                             arcade.getWaitingLobbyManager().getWaitingTimer().setTime(newTime);
-                            arcade.getWaitingLobbyManager().getWaitingTimer().startTimer();
                             arcade.getGame().getServer().broadcastMessage(ChatColor.AQUA + (ChatColor.BOLD + player.getName() + " started the game."));
+
+                            if(!arcade.getWaitingLobbyManager().getWaitingTimer().isActive()){
+                                arcade.getWaitingLobbyManager().getWaitingTimer().startTimer();
+                            }
 
                             return true;
                         }catch(Exception e){
