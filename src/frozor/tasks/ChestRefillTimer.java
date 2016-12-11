@@ -21,8 +21,6 @@ public class ChestRefillTimer extends BukkitRunnable{
     }
 
     public void reset(){
-        this.active = false;
-        this.cancel();
         setTime(startTime);
     }
 
