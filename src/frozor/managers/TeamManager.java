@@ -122,7 +122,7 @@ public class TeamManager {
     }
 
     public PlayerTeam getPlayerTeam(Player player){
-        if(!players.containsKey(player.getUniqueId())) assignPlayer(player);
+        if(!players.containsKey(player.getUniqueId())) return null;
 
         return teams.get(players.get(player.getUniqueId()));
     }
