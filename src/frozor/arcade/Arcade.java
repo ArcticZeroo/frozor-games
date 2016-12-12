@@ -42,6 +42,7 @@ public class Arcade implements Listener{
     private NotificationManager notificationManager = new NotificationManager("Game");
     private NotificationManager joinNotificationManager = new NotificationManager("Join");
     private FrozorScoreboard scoreboard;
+    private ChatManager chatManager;
 
     private GameState gameState = GameState.LOBBY;
 
@@ -58,6 +59,7 @@ public class Arcade implements Listener{
         kitManager = new KitManager(this, kits);
         damageManager = new DamageManager(this);
         waitingLobbyManager = new WaitingLobbyManager(this);
+        chatManager = new ChatManager(this);
 
         plugin.getCommand("kit").setExecutor(new KitCommands(this));
         plugin.getCommand("game").setExecutor(new GameCommands(this));
@@ -180,7 +182,7 @@ public class Arcade implements Listener{
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event){
-        if(getGameState() != GameState.PLAYING) event.setCancelled(true);
+        if(getGameState() != GameState.PLAYING && event.getInventory().getType() != InventoryType.HOPPER) event.setCancelled(true);
         if(event.getInventory().getType() == InventoryType.ENCHANTING){
             EnchantingInventory inventory = (EnchantingInventory) event.getInventory();
             addLapis(inventory);
