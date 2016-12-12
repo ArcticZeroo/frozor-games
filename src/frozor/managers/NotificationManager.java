@@ -18,6 +18,10 @@ public class NotificationManager {
         this.prefixColor = prefixColor;
     }
 
+    public ChatColor getPrefixColor() {
+        return prefixColor;
+    }
+
     public String getMessage(String message){
         return getColoredPrefix() + ChatColor.GRAY + message;
     }
