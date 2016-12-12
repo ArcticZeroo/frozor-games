@@ -129,9 +129,9 @@ public class WaitingLobbyManager implements Listener{
 
         if(arcade.getGameState() == GameState.TIMER){
             if(Bukkit.getServer().getOnlinePlayers().size() < getPlayerMin()){
+                waitingTimer.cancel();
                 waitingTimer.reset();
-                //TODO: Fix this  ¯\_(ツ)_/¯
-                //waitingLobbyScoreboard.setWaiting();
+                setScoreboardWaiting();
                 arcade.setGameState(GameState.LOBBY);
             }
         }
