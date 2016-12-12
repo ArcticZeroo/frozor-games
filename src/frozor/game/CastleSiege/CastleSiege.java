@@ -78,7 +78,6 @@ public class CastleSiege extends Game implements Listener{
         chestFiller = new CastleChestFiller(this);
         chestRefillTimer = new ChestRefillTimer(this.getArcade(), 60*5);
         chestFiller.fillChests();
-        chestRefillTimer.startTimer();
 
         updateRefillTimer();
 
@@ -108,7 +107,7 @@ public class CastleSiege extends Game implements Listener{
 
     public void updateRefillTimer(){
         if(arcade.getGameState() == GameState.END) return;
-        arcade.getDebugManager().print("Updating refill timer");
+        //arcade.getDebugManager().print("Updating refill timer");
         if(chestRefillTimer.getTime() > 60){
             arcade.getGameScoreboard().setLine(8, String.format("%.1f Minutes", chestRefillTimer.getTime() / 60F));
         }else{
@@ -121,6 +120,7 @@ public class CastleSiege extends Game implements Listener{
         if(event.getGameState() == GameState.PLAYING){
             arcade.getDebugManager().print("Starting regen timer");
             castleKingRegen.startRegenTimer();
+            chestRefillTimer.startTimer();
         }else if(event.getGameState() == GameState.END){
             castleKingRegen.cancel();
             chestRefillTimer.cancel();
@@ -143,11 +143,11 @@ public class CastleSiege extends Game implements Listener{
             return true;
         }
 
-        if(location.distance(redKing.getKing().getLocation()) < 6){
+        if(location.distance(redKing.getKing().getLocation()) < 10){
             return true;
         }
 
-        if(location.distance(redKing.getKing().getLocation()) < 6){
+        if(location.distance(blueKing.getKing().getLocation()) < 10){
             return true;
         }
 
@@ -213,7 +213,7 @@ public class CastleSiege extends Game implements Listener{
     }
 
     @EventHandler
-    public void onKingDamage(EntityDamageEvent event){
+    public void onEntityDamage(EntityDamageEvent event){
         if(event.getEntityType() == EntityType.ZOMBIE){
             if((event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) || (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) || (event.getCause() == EntityDamageEvent.DamageCause.FIRE)){
                 event.setCancelled(true);
@@ -223,6 +223,10 @@ public class CastleSiege extends Game implements Listener{
 
                 squid.remove();
                 stand.remove();
+            }
+        }else if(event.getEntityType() == EntityType.PLAYER && arcade.getGameState().compareTo(GameState.START) >= 0){
+            if(event.getCause() == EntityDamageEvent.DamageCause.FALL){
+                arcade.getDebugManager().print(event.getEntity().getLastDamageCause().toString());
             }
         }
     }
