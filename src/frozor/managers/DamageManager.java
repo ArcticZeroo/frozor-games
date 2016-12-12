@@ -5,7 +5,9 @@ import frozor.enums.GameState;
 import frozor.events.GameStateChangeEvent;
 import frozor.teams.PlayerTeam;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,6 +15,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DamageManager implements Listener{
     private Arcade arcade;
@@ -71,11 +79,24 @@ public class DamageManager implements Listener{
                 killer = "Drowning";
                 break;
         }
+
         event.setDeathMessage(notificationManager.getMessage(getNameWithTeamColor(player) + ChatColor.GRAY + " was killed by " + ChatColor.YELLOW + killer + ChatColor.GRAY + "."));
 
-        event.getEntity().setHealth(20);
+        event.setKeepInventory(false);
+        event.setKeepLevel(false);
 
+        List<ItemStack> toRemove = new ArrayList<>();
+        for(ItemStack item : event.getDrops()){
+            if(item == null || item.getType() == Material.AIR) continue;
+            if(item.getItemMeta().spigot().isUnbreakable()){
+                toRemove.add(item);
+            }
+        }
+        event.getDrops().removeAll(toRemove);
+
+        event.getEntity().setHealth(20);
         event.getEntity().teleport(arcade.getTeamManager().getTeamSpawn(event.getEntity()));
+        arcade.getKitManager().giveKit(event.getEntity());
     }
 
     @EventHandler
