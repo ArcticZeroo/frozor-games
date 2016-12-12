@@ -1,14 +1,23 @@
 package frozor.commands;
 
 import frozor.arcade.Arcade;
+import frozor.enums.GameState;
 import frozor.kits.PlayerKit;
 import frozor.managers.KitManager;
+import frozor.util.UtilChat;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class KitCommands implements CommandExecutor{
@@ -22,6 +31,11 @@ public class KitCommands implements CommandExecutor{
     private boolean handleFailedCommand(Player player, String message){
         player.sendMessage(message);
         return false;
+    }
+
+    private boolean sendKitDoesNotExist(Player player){
+        player.sendMessage(arcade.getKitManager().getNotificationManager().getError("That kit doesn't exist!"));
+        return true;
     }
 
     @Override
@@ -41,13 +55,30 @@ public class KitCommands implements CommandExecutor{
                         player.sendMessage(kitManager.getNotificationManager().getMessage("You don't have a kit equipped!"));
                     }
                 }else{
-                    String kitName = args[0].toLowerCase();
-                    if(kitManager.getKits().containsKey(kitName)){
-                        PlayerKit newKit = kitManager.getKits().get(kitName);
-                        kitManager.selectKit(player.getUniqueId(), newKit);
-                        player.sendMessage(kitManager.getNotificationManager().getMessage(String.format("You equipped %s kit.", ChatColor.YELLOW + newKit.getName() + ChatColor.GRAY)));
-                    }else{
-                        player.sendMessage(kitManager.getNotificationManager().getError("That kit doesn't exist!"));
+                    switch(args[0].toLowerCase()){
+                        case "view":
+                            if(args.length < 2){
+                                arcade.getKitManager().sendKitList(player);
+                            }else{
+                                String kitName = args[1].toLowerCase();
+                                if(kitManager.getKits().containsKey(kitName)){
+                                    arcade.getKitManager().sendKitInventory(player, kitManager.getKits().get(kitName));
+                                }else{
+                                    sendKitDoesNotExist(player);
+                                }
+                            }
+
+                            break;
+                        case "list":
+                            arcade.getKitManager().sendKitList(player);
+                            break;
+                        default:
+                            String kitName = args[0].toLowerCase();
+                            if(kitManager.getKits().containsKey(kitName)){
+                                kitManager.changeKit(player, kitName);
+                            }else{
+                                sendKitDoesNotExist(player);
+                            }
                     }
                 }
 

@@ -9,12 +9,12 @@ import java.util.List;
 
 public class PlayerKit {
     protected String name;
-    protected String[] description;
+    protected List<String> description;
     protected ItemStack displayItem;
     protected List<ItemStack> startingItems = new ArrayList<>();
     protected ItemStack[] startingArmor;
 
-    PlayerKit(String name, String[] description, ItemStack displayItem){
+    PlayerKit(String name, List<String> description, ItemStack displayItem){
         this.name = name;
         this.description = description;
         this.displayItem = displayItem;
@@ -38,7 +38,7 @@ public class PlayerKit {
         return name;
     }
 
-    public String[] getDescription(){
+    public List<String> getDescription(){
         return description;
     }
 
@@ -47,7 +47,10 @@ public class PlayerKit {
     }
 
     protected void giveStartingItems(Player player){
-        for(ItemStack item : startingItems){
+        ItemStack[] kitItems = new ItemStack[this.startingItems.size()];
+        kitItems = this.startingItems.toArray(kitItems);
+
+        for(ItemStack item : kitItems){
             player.getInventory().addItem(item);
         }
 

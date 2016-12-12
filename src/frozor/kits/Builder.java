@@ -3,21 +3,44 @@ package frozor.kits;
 
 import frozor.itemstack.ArmorSet;
 import frozor.itemstack.ArmorSetType;
+import frozor.util.UtilChat;
 import frozor.util.UtilItem;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Builder extends PlayerKit {
     public Builder() {
-        super("Builder", new String[] {"§7Run at the speed of light!", "", "§fYou Will Receive:", "§3•§Wood Sword", "§3•§a64 §fARrows", "§3•§fChainmail Helmet", "§3•§fChainmail Chestplate", "§3•§fChainmail Leggings", "§3•§fChainmail Boots"}, new ItemStack(Material.DIAMOND_PICKAXE));
+        super("Builder",
+                new ArrayList<>(Arrays.asList(
+                        ChatColor.GRAY + "Enemies trying to kill your king?",
+                        ChatColor.GRAY + "Build a wall!",
+                        "",
+                        ChatColor.WHITE + "You Will Receive:",
+                        UtilChat.getKitEquipmentString("Diamond Pickaxe"),
+                        UtilChat.getKitEquipmentString("Iron Axe"),
+                        UtilChat.getKitEquipmentString("Iron Shovel"),
+                        UtilChat.getKitItemString("Brick", 64),
+                        UtilChat.getKitEquipmentString("Chainmail Helmet"),
+                        UtilChat.getKitEquipmentString("Chainmail Chestplate"),
+                        UtilChat.getKitEquipmentString("Chainmail Leggings"),
+                        UtilChat.getKitEquipmentString("Chainmail Boots"))),
+                new ItemStack(Material.DIAMOND_PICKAXE));
 
-        addStartingItems(new ItemStack[]{UtilItem.createUnbreakableItem(Material.IRON_PICKAXE), UtilItem.createUnbreakableItem(Material.IRON_AXE), new ItemStack(Material.BRICK, 64)});
+        addStartingItems(
+                new ItemStack[]{
+                        UtilItem.createUnbreakableItem(Material.DIAMOND_PICKAXE),
+                        UtilItem.createUnbreakableItem(Material.IRON_AXE),
+                        UtilItem.createUnbreakableItem(Material.IRON_SPADE),
+                        new ItemStack(Material.BRICK, 64)
+                });
+
         setStartingArmor(ArmorSet.getArmorSet(ArmorSetType.CHAINMAIL));
-    }
-
-    public void giveItems(Player player){
-        super.giveItems(player);
 
     }
 }

@@ -4,6 +4,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class UtilChat {
@@ -16,5 +17,17 @@ public class UtilChat {
 
     public static void SendComponent(Player player, TextComponent component){
         player.spigot().sendMessage(component);
+    }
+
+    public static String getKitEquipmentString(String item){
+        return ChatColor.GREEN + "+ " + ChatColor.WHITE + item;
+    }
+
+    public static String getKitItemString(String item, int amount){
+        return ChatColor.GREEN + "+ " + ChatColor.AQUA + Integer.toString(amount) + " " + ChatColor.WHITE + item;
+    }
+
+    public static String getKitNegativeString(String effect){
+        return ChatColor.RED + "- " + ChatColor.WHITE + effect;
     }
 }
