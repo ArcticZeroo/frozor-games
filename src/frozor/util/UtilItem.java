@@ -2,6 +2,7 @@ package frozor.util;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -17,6 +18,13 @@ public class UtilItem {
         ItemStack item = new ItemStack(material);
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.spigot().setUnbreakable(true);
+        item.setItemMeta(itemMeta);
+        return item;
+    }
+
+    public static ItemStack addEnchantmentGlow(ItemStack item){
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(itemMeta);
         return item;
     }
