@@ -42,6 +42,7 @@ public class CastleChestFiller {
                 lootList.add(new ItemStack(Material.LOG, random.nextInt(8)+2));
                 lootList.add(new ItemStack(Material.IRON_INGOT, random.nextInt(6)+2));
                 lootList.add(new ItemStack(Material.DIAMOND, random.nextInt(3)+1));
+                lootList.add(new ItemStack(Material.ANVIL));
                 break;
             case FOOD:
                 lootList.add(new ItemStack(Material.COOKED_BEEF, random.nextInt(7)+10));
@@ -149,8 +150,8 @@ public class CastleChestFiller {
         return getRandomCategoryItem(CastleChestLootType.ARMOR);
     }
 
-    private ItemStack[] getRandomAirSlots(int bound){
-        int AirCount = random.nextInt(bound);
+    private ItemStack[] getRandomAirSlots(int bound, int minimum){
+        int AirCount = random.nextInt(bound)+minimum;
 
         ItemStack[] air = new ItemStack[AirCount];
         for(int i = 0; i < AirCount; i++){
@@ -170,7 +171,7 @@ public class CastleChestFiller {
         for(int i = 0; i < LootCount; i++){
             chestLoot.add(getRandomChestItem());
 
-            ItemStack[] airSlots = getRandomAirSlots(maxAir+1);
+            ItemStack[] airSlots = getRandomAirSlots(maxAir, 1);
             Collections.addAll(chestLoot, airSlots);
         }
 
