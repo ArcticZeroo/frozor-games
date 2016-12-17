@@ -2,12 +2,16 @@ package frozor.commands;
 
 import frozor.arcade.Arcade;
 import frozor.enums.GameState;
+import frozor.events.GameEndEvent;
 import frozor.managers.NotificationManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
+import java.util.Arrays;
 
 public class GameCommands implements CommandExecutor{
     private Arcade arcade;
@@ -46,6 +50,7 @@ public class GameCommands implements CommandExecutor{
 
                 switch(subCommand.toLowerCase()){
                     case "start":
+                        if(arcade.getGameState() == GameState.PREPARE) return handleFailedCommand(player, "The game is loading...");
                         if(arcade.getGameState().compareTo(GameState.START) >= 0) return handleFailedCommand(player, "The game has already started.");
 
                         if(args.length < 2) return handleFailedCommand(player, "You must specify a time to set the timer to.");
@@ -61,6 +66,7 @@ public class GameCommands implements CommandExecutor{
 
                             return true;
                         }catch(Exception e){
+                            e.printStackTrace();
                             return handleFailedCommand(player, "Invalid input.");
                         }
                     case "state":
@@ -93,9 +99,19 @@ public class GameCommands implements CommandExecutor{
 
                         //If it didn't return, that means the GameState has to exist!
                         return sendGameStateMessage(player, state);
+                    case "stop":
+                        if(arcade.getGameState() != GameState.PLAYING){
+                            return handleFailedCommand(player, "You can't stop the game right now!");
+                        }
+                        new GameEndEvent("Game Ended by " + player.getName(), null, null).callEvent();
+                        arcade.getGame().getServer().broadcastMessage(ChatColor.AQUA + (ChatColor.BOLD + player.getName() + " stopped the game."));
+                        return true;
                     default:
                         return handleFailedCommand(player, "Invalid sub-command.");
                 }
+            case "suicide":
+                player.damage(0);
+                new PlayerDeathEvent(player, Arrays.asList(player.getInventory().getContents()), player.getTotalExperience(), "who cares");
         }
 
         return handleFailedCommand(player, "An unexpected error occurred.");
