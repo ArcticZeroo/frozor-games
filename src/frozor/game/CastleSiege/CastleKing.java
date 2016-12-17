@@ -23,23 +23,25 @@ public class CastleKing {
     private void giveKingEquipment(Zombie king){
         king.getEquipment().setArmorContents(ArmorSet.getArmorSet(ArmorSetType.IRON));
         king.getEquipment().setHelmet(UtilItem.createUnbreakableItem(Material.GOLD_HELMET));
+        king.getEquipment().setItemInHand(UtilItem.createUnbreakableItem(Material.GOLD_SWORD));
     }
 
     private Zombie createKing(){
         Location kingLocation = DatapointParser.parse(castleSiege.getMapConfig().getString("kings."+kingType), castleSiege.getGameWorld());
 
-        castleSiege.getArcade().getDebugManager().print("Spawning a king at " + kingLocation.toString());
+        castleSiege.getArcade().getDebugManager().print(String.format("Spawning a king at (%.2f, %.2f, %.2f), world = %s", kingLocation.getX(), kingLocation.getY(), kingLocation.getZ(), kingLocation.getWorld().getName()));
 
         Zombie king = (Zombie) UtilEnt.spawnNamedEntity(kingLocation, EntityType.ZOMBIE, kingColor + (ChatColor.BOLD + kingType + " King"));
 
-        //king.teleport(kingLocation);
+        king.setBaby(false);
+        king.setVillager(true);
 
-        //giveKingEquipment(king);
+        giveKingEquipment(king);
 
-        //UtilEnt.freeze(king);
+        UtilEnt.vegetate(king);
 
-        //king.setMaxHealth(40);
-        //king.setHealth(40);
+        king.setMaxHealth(40);
+        king.setHealth(40);
 
         return king;
     }
@@ -51,6 +53,8 @@ public class CastleKing {
         this.kingColor = kingColor;
 
         this.king = createKing();
+
+        castleSiege.getArcade().getDebugManager().print("Spawned a king at " + this.king.getLocation().toString());
     }
 
     public Zombie getKing() {
@@ -70,7 +74,7 @@ public class CastleKing {
     }
 
     public boolean canRegen(){
-        return ((getKing().getHealth() <= (double) 19) && (System.currentTimeMillis() - getLastDamage()) >= 3000);
+        return ((getKing().getHealth() < getKing().getMaxHealth()) && (System.currentTimeMillis() - getLastDamage()) >= 5000);
     }
 
     public String getKingType() {
