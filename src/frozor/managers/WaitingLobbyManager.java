@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -28,7 +29,6 @@ public class WaitingLobbyManager implements Listener{
     private final int maxTimer = 20;
 
     private WaitingTimer waitingTimer;
-    //private FrozorScoreboard waitingLobbyScoreboard;
 
     public WaitingLobbyManager(Arcade arcade) {
         this.arcade = arcade;
@@ -40,6 +40,10 @@ public class WaitingLobbyManager implements Listener{
 
         arcade.getDamageManager().setAllowPlayerDamage(false);
 
+        makeWaitingScoreboard();
+    }
+
+    public void makeWaitingScoreboard(){
         FrozorScoreboard scoreboard = arcade.getGameScoreboard();
         scoreboard.setNewSidebarObjective("waitSb");
         scoreboard.setDisplayName(ChatColor.AQUA + (ChatColor.BOLD + "Waiting for players"));
@@ -79,6 +83,22 @@ public class WaitingLobbyManager implements Listener{
         arcade.getGameScoreboard().setDisplayName(ChatColor.AQUA + (ChatColor.BOLD + "Waiting for players"));
     }
 
+    public boolean canStartTimer(){
+        //The timer can be started if:
+        // - The timer has not started
+        // - Players are in the lobby
+        // - Player count is currently above or equal to the min
+        return (arcade.getGameState() == GameState.LOBBY && arcade.getGame().getServer().getOnlinePlayers().size() >= getPlayerMin() && !getWaitingTimer().isActive());
+    }
+
+    public boolean canShortenTimer(){
+        //The timer can be shortened if:
+        // - The timer is already running (GameState.TIMER & isActive())
+        // - Players exceeds or is equal to the maximum amount * 0.75
+        // - The timer has not already gone past the value it would if it was shortened
+        return ((arcade.getGameState() == GameState.TIMER) && (getWaitingTimer().isActive()) && (arcade.getGame().getServer().getOnlinePlayers().size() >= Math.floor(getPlayerMax()*0.75)) && (getWaitingTimer().getTime() > maxTimer));
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         //Only handling events in waiting lobby, so that things don't break.
@@ -95,16 +115,12 @@ public class WaitingLobbyManager implements Listener{
         //Deal with timer bull
         int onlineCount = Bukkit.getServer().getOnlinePlayers().size();
 
-        if(onlineCount >= getPlayerMin() && arcade.getGameState() == GameState.LOBBY){
-            //If there are at least minimum players, and the timer hasn't started yet
+        if(canStartTimer()){
             waitingTimer.startTimer();
-        }else if(onlineCount == getPlayerMax()){
-            //If players is max, check if the timer can be shortened and do so if it can
-            if(waitingTimer.getTime() > maxTimer){
-                waitingTimer.setTime(maxTimer);
-            }
+        }else if(canShortenTimer()){
+            waitingTimer.setTime(maxTimer);
         }else if(onlineCount > getPlayerMax()){
-            event.getPlayer().kickPlayer("This game is currently full.");
+            event.getPlayer().kickPlayer(ChatColor.RED + (ChatColor.BOLD + "This game is currently full."));
         }
     }
 
@@ -117,6 +133,12 @@ public class WaitingLobbyManager implements Listener{
     public void onGameStateChange(GameStateChangeEvent event){
         if(event.getGameState() == GameState.LOBBY){
             setScoreboardWaiting();
+            if(waitingTimer != null){
+                if(waitingTimer.isActive()){
+                    waitingTimer.cancel();
+                }
+            }
+            waitingTimer = new WaitingTimer(arcade, minTimer);
         }else if(event.getGameState() == GameState.TIMER){
             arcade.getGameScoreboard().setDisplayName(String.format(ChatColor.AQUA + (ChatColor.BOLD + "Starting in %d seconds"), getWaitingTimer().getTime()));
         }
@@ -148,8 +170,10 @@ public class WaitingLobbyManager implements Listener{
     //Keep the cookie in the chest
     @EventHandler
     public void onChestItemInteract(InventoryClickEvent event){
-        if(arcade.getGameState() == GameState.TIMER || arcade.getGameState() == GameState.LOBBY){
-            if(event.getInventory().getName().equalsIgnoreCase("§9§lParkour Completion Chest")) event.setCancelled(true);
+        //If the game has not yet started
+        if(arcade.getGameState().compareTo(GameState.START) < 0){
+            if(event.getWhoClicked().getGameMode() == GameMode.CREATIVE) return;
+            if(event.getInventory().getType() == InventoryType.CHEST) event.setCancelled(true);
         }
     }
 
