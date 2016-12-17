@@ -2,20 +2,25 @@ package frozor.component;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 public class DatapointParser {
 
-    public static Location parse(String point){
+    public static Location parse(String point, World world){
         String[] stringCoordinates = toStringArray(point);
 
         double[] coordinates = toDoubleArray(stringCoordinates);
 
-        Location location = new Location(Bukkit.getWorlds().get(0), coordinates[0], coordinates[1], coordinates[2]);
+        Location location = new Location(world, coordinates[0], coordinates[1], coordinates[2]);
 
         location.setPitch(getPitch(stringCoordinates));
         location.setYaw(getYaw(stringCoordinates));
 
         return location;
+    }
+
+    public static Location parse(String point){
+        return parse(point, Bukkit.getWorlds().get(0));
     }
 
     public static String[] toStringArray(String point){
