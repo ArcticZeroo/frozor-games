@@ -1,8 +1,12 @@
 package frozor.game;
 
+import org.bukkit.GameMode;
+
 public class GameSettings {
     private boolean allowRespawns = true;
     private boolean allowPlayerDamage = true;
+    private boolean giveResistanceOnSpawn = true;
+    private GameMode gameMode = GameMode.SURVIVAL;
     private int playerMin = 8;
     private int playerMax = 16;
 
@@ -20,6 +24,22 @@ public class GameSettings {
 
     public boolean isRespawnAllowed(){
         return allowRespawns;
+    }
+
+    public void setGiveResistanceOnSpawn(boolean giveResistanceOnSpawn) {
+        this.giveResistanceOnSpawn = giveResistanceOnSpawn;
+    }
+
+    public boolean isResistanceGivenOnSpawn(){
+        return giveResistanceOnSpawn;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
     }
 
     public void setPlayerMax(int playerMax) {
