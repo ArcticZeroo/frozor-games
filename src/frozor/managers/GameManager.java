@@ -31,8 +31,7 @@ public class GameManager implements Listener{
     @EventHandler
     public void onGameStateChange(GameStateChangeEvent event){
         if(event.getGameState() == GameState.START){
-            arcade.getGame().setGameWorld(arcade.getGameWorldManager().loadMap(arcade.getGame().getGameWorldName()));
-            arcade.getTeamManager().reloadTeams();
+            arcade.getGame().setGameWorld(UtilWorld.loadWorld(arcade.getGame().getGameWorldName()));
 
             arcade.getGame().onStart();
             arcade.getTeamManager().teleportPlayers();

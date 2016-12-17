@@ -26,7 +26,6 @@ public class GameEndTask extends BukkitRunnable{
             player.teleport(arcade.getGame().getSpawnLocation());
         }
 
-        UtilWorld.unloadWorld(arcade.getGame().getGameWorld());
-        new WaitingLobbyTeleportTask(arcade).runTaskLater(arcade.getPlugin(), 20L);
+        new WaitingLobbyTeleportTask(arcade).runTaskLater(arcade.getPlugin(), 40L);
     }
 }

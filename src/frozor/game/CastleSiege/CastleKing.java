@@ -5,6 +5,7 @@ import frozor.itemstack.ArmorSet;
 import frozor.itemstack.ArmorSetType;
 import frozor.util.UtilEnt;
 import frozor.util.UtilItem;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,16 +28,18 @@ public class CastleKing {
     private Zombie createKing(){
         Location kingLocation = DatapointParser.parse(castleSiege.getMapConfig().getString("kings."+kingType), castleSiege.getGameWorld());
 
-        castleSiege.getArcade().getDebugManager().print(String.format("Spawning a king at (%.2f, %.2f, %.2f), world = %s", kingLocation.getX(), kingLocation.getY(), kingLocation.getZ(), kingLocation.getWorld().getName()));
+        castleSiege.getArcade().getDebugManager().print("Spawning a king at " + kingLocation.toString());
 
         Zombie king = (Zombie) UtilEnt.spawnNamedEntity(kingLocation, EntityType.ZOMBIE, kingColor + (ChatColor.BOLD + kingType + " King"));
 
-        giveKingEquipment(king);
+        //king.teleport(kingLocation);
 
-        UtilEnt.freeze(king);
+        //giveKingEquipment(king);
 
-        king.setMaxHealth(40);
-        king.setHealth(40);
+        //UtilEnt.freeze(king);
+
+        //king.setMaxHealth(40);
+        //king.setHealth(40);
 
         return king;
     }

@@ -173,6 +173,7 @@ public class CastleSiege extends Game implements Listener{
     }
 
     private Boolean isProtectedLocation(Location location){
+        if(getGameWorld() == null) return false;
         if(!location.getWorld().getName().equals(getGameWorld().getName())) return false;
 
         if(location.getBlock().getType() == Material.CHEST){

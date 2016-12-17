@@ -10,8 +10,11 @@ import org.bukkit.potion.PotionEffectType;
 
 public class UtilEnt {
     public static Entity spawnNamedEntity(Location location, EntityType entityType, String name){
+        System.out.println("Spawning a named entity - " + name);
+        System.out.println("Spawning the entity");
         Entity entity = location.getWorld().spawnEntity(location, entityType);
 
+        System.out.println("Spawning the armor stand");
         ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location.add(0, 2, 0), EntityType.ARMOR_STAND);
 
         armorStand.setVisible(false);
@@ -30,6 +33,7 @@ public class UtilEnt {
         entity.setPassenger(squid);*/
         entity.setPassenger(armorStand);
 
+        System.out.println("yay");
         return entity;
     }
 

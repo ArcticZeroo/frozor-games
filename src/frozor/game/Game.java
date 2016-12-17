@@ -95,7 +95,6 @@ public class Game extends JavaPlugin{
 
     public void onStart(){
         reloadGameWorld();
-        arcade.getTeamManager().reloadTeams();
         UtilWorld.ClearWorld(getGameWorld());
 
         arcade.getDebugManager().print(gameWorld.toString());

@@ -53,6 +53,26 @@ public class TeamManager {
         }
     }
 
+    private void reloadTeamSpawns(PlayerTeam team){
+        List<String> spawnStrings = arcade.getGame().getMapConfig().getStringList("spawns."+team.getTeamName());
+        if(spawnStrings == null){
+            arcade.getDebugManager().print("Team " + team.getTeamName() + " has no valid spawns, continuing.");
+            return;
+        }
+
+        List<Location> teamSpawns = new ArrayList<>();
+
+        for(String spawnString : spawnStrings){
+            teamSpawns.add(DatapointParser.parse(spawnString, arcade.getPlugin().getGameWorld()));
+        }
+
+        Location[] teamSpawnsArray = new Location[teamSpawns.size()];
+
+        teamSpawnsArray = teamSpawns.toArray(teamSpawnsArray);
+
+        team.setTeamSpawns(teamSpawnsArray);
+    }
+
     public HashMap<String, PlayerTeam> getTeams() {
         return teams;
     }
@@ -119,6 +139,10 @@ public class TeamManager {
     }
 
     public void teleportPlayers(){
+        for(PlayerTeam team : teams.values()){
+            reloadTeamSpawns(team);
+        }
+
         for(Player player : arcade.getPlugin().getServer().getOnlinePlayers()){
             player.teleport(getTeamSpawn(player));
         }
