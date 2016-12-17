@@ -1,7 +1,6 @@
 package frozor.tasks;
 
 import frozor.arcade.Arcade;
-import frozor.enums.GameState;
 import frozor.events.ChestRefillTimeChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
