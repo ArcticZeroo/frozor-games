@@ -1,6 +1,5 @@
 package frozor.component;
 
-import clojure.lang.Obj;
 import frozor.arcade.Arcade;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -72,15 +71,11 @@ public class FrozorScoreboard {
         teams = new Team[16];
     }
 
-    private void makeNewSidebarObjective(Objective newSidebarObjective){
+    private Objective makeNewSidebarObjective(Objective newSidebarObjective){
         clearOldObjective();
         objective = newSidebarObjective;
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         objective.setDisplayName(newSidebarObjective.getDisplayName());
-    }
-
-    public Objective setNewSidebarObjective(Objective newSidebarObjective){
-        makeNewSidebarObjective(newSidebarObjective);
         return objective;
     }
 
