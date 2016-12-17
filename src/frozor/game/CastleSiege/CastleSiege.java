@@ -293,7 +293,7 @@ public class CastleSiege extends Game implements Listener{
 
                 LivingEntity king = (LivingEntity) event.getEntity();
 
-                if(king.getHealth() == 20){
+                if(king.getHealth() == 40){
                     sendDamageMessage = true;
                 }
 
