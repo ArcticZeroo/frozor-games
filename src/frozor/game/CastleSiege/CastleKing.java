@@ -4,6 +4,7 @@ import frozor.component.DatapointParser;
 import frozor.itemstack.ArmorSet;
 import frozor.itemstack.ArmorSetType;
 import frozor.util.UtilEnt;
+import frozor.util.UtilItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,17 +21,22 @@ public class CastleKing {
 
     private void giveKingEquipment(Zombie king){
         king.getEquipment().setArmorContents(ArmorSet.getArmorSet(ArmorSetType.IRON));
-        king.getEquipment().setHelmet(new ItemStack(Material.GOLD_HELMET));
+        king.getEquipment().setHelmet(UtilItem.createUnbreakableItem(Material.GOLD_HELMET));
     }
 
     private Zombie createKing(){
-        Location kingLocation = DatapointParser.parse(castleSiege.getMapConfig().getString("kings."+kingType));
+        Location kingLocation = DatapointParser.parse(castleSiege.getMapConfig().getString("kings."+kingType), castleSiege.getGameWorld());
+
+        castleSiege.getArcade().getDebugManager().print(String.format("Spawning a king at (%.2f, %.2f, %.2f), world = %s", kingLocation.getX(), kingLocation.getY(), kingLocation.getZ(), kingLocation.getWorld().getName()));
 
         Zombie king = (Zombie) UtilEnt.spawnNamedEntity(kingLocation, EntityType.ZOMBIE, kingColor + (ChatColor.BOLD + kingType + " King"));
 
         giveKingEquipment(king);
 
         UtilEnt.freeze(king);
+
+        king.setMaxHealth(40);
+        king.setHealth(40);
 
         return king;
     }
@@ -64,8 +70,16 @@ public class CastleKing {
         return ((getKing().getHealth() <= (double) 19) && (System.currentTimeMillis() - getLastDamage()) >= 3000);
     }
 
+    public String getKingType() {
+        return kingType;
+    }
+
+    public ChatColor getKingColor() {
+        return kingColor;
+    }
+
     public void regen(){
-        getKing().setHealth(getKing().getHealth() + (double) 1);
+        regen(1);
     }
 
     public void regen(int amount){
