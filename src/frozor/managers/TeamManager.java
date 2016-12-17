@@ -1,13 +1,10 @@
 package frozor.managers;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import frozor.arcade.Arcade;
 import frozor.component.DatapointParser;
 import frozor.teams.PlayerTeam;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
@@ -24,7 +21,16 @@ public class TeamManager {
         arcade.getDebugManager().print("There are " + teams.length + " teams to add.");
 
         for(PlayerTeam team : teams){
+            this.teams.put(team.getTeamName(), team);
+        }
+    }
+
+    public void reloadTeams(){
+        for(PlayerTeam team : teams.values()){
             arcade.getDebugManager().print("Adding team " + team.getTeamName());
+
+            team.unregister();
+            team.register(arcade.getGameScoreboard().getScoreboard());
 
             List<String> spawnStrings = arcade.getGame().getMapConfig().getStringList("spawns."+team.getTeamName());
             if(spawnStrings == null){
@@ -35,7 +41,7 @@ public class TeamManager {
             List<Location> teamSpawns = new ArrayList<>();
 
             for(String spawnString : spawnStrings){
-                teamSpawns.add(DatapointParser.parse(spawnString));
+                teamSpawns.add(DatapointParser.parse(spawnString, arcade.getPlugin().getGameWorld()));
             }
 
             Location[] teamSpawnsArray = new Location[teamSpawns.size()];
@@ -43,13 +49,8 @@ public class TeamManager {
             teamSpawnsArray = teamSpawns.toArray(teamSpawnsArray);
 
             team.setTeamSpawns(teamSpawnsArray);
-            team.register(arcade.getGameScoreboard().getScoreboard());
-            this.teams.put(team.getTeamName(), team);
-
             arcade.getDebugManager().print("Added team " + team.getTeamName());
         }
-
-        arcade.getDebugManager().print("Added " + this.teams.size() + " teams.");
     }
 
     public HashMap<String, PlayerTeam> getTeams() {
@@ -89,6 +90,8 @@ public class TeamManager {
     }
 
     public void assignTeams(){
+        reloadTeams();
+
         for(Player player : arcade.getPlugin().getServer().getOnlinePlayers()){
             if(players.containsKey(player.getUniqueId())) continue;
             assignPlayer(player);
@@ -131,5 +134,12 @@ public class TeamManager {
         PlayerTeam playerTeam = getPlayerTeam(player1);
 
         return (playerTeam.getScoreboardTeam().hasEntry(player2.getName()));
+    }
+
+    public void clearTeamEntries(){
+        players = new HashMap<>();
+        for(PlayerTeam team : teams.values()){
+            team.unregister();
+        }
     }
 }
