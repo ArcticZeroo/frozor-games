@@ -1,5 +1,5 @@
 package frozor.enums;
 
 public enum GameState{
-    LOBBY, TIMER, START, PLAYING, END
+    PREPARE, LOBBY, TIMER, START, PLAYING, END
 }
