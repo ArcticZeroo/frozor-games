@@ -1,6 +1,5 @@
 package frozor.game.CastleSiege;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import frozor.component.DatapointParser;
 import frozor.teams.PlayerTeam;
 import org.bukkit.Location;
@@ -127,23 +126,23 @@ public class CastleChestFiller {
         categoryStartWeight--;
         if(RandomCategoryDouble == categoryStartWeight) return new ItemStack(Material.GOLDEN_APPLE);
 
-        if(RandomCategoryDouble <= (double) categoryStartWeight*0.25){
+        if(RandomCategoryDouble <= (double) categoryStartWeight*0.2){
             return getRandomCategoryItem(CastleChestLootType.FOOD);
         }
 
-        if(RandomCategoryDouble <= (double) categoryStartWeight*0.45){
+        if(RandomCategoryDouble <= (double) categoryStartWeight*0.4){
             return getRandomCategoryItem(CastleChestLootType.MATERIALS);
         }
 
-        if(RandomCategoryDouble <= (double) categoryStartWeight*0.60){
+        if(RandomCategoryDouble <= (double) categoryStartWeight*0.53){
             return getRandomCategoryItem(CastleChestLootType.TOOLS);
         }
 
-        if(RandomCategoryDouble <= (double) categoryStartWeight*0.75){
+        if(RandomCategoryDouble <= (double) categoryStartWeight*0.68){
             return getRandomCategoryItem(CastleChestLootType.AMMO);
         }
 
-        if(RandomCategoryDouble <= (double) categoryStartWeight*0.85){
+        if(RandomCategoryDouble <= (double) categoryStartWeight*0.80){
             return getRandomCategoryItem(CastleChestLootType.WEAPONS);
         }
 
@@ -189,7 +188,7 @@ public class CastleChestFiller {
         }
 
         for(String configChestString : configChestStrings){
-            Location chestLocation = DatapointParser.parse(configChestString);
+            Location chestLocation = DatapointParser.parse(configChestString, castleSiege.getGameWorld());
 
             Chest chest = (Chest) chestLocation.getBlock().getState();
 
