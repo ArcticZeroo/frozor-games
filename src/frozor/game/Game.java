@@ -6,6 +6,7 @@ import frozor.component.CustomConfig;
 import frozor.kits.PlayerKit;
 import frozor.managers.NotificationManager;
 import frozor.teams.PlayerTeam;
+import frozor.util.UtilWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,6 +26,7 @@ public class Game extends JavaPlugin{
 
     private String gameWorldName;
     private World gameWorld;
+    protected World lobbyWorld;
     protected Location spawnLocation;
 
     public Game(String title, PlayerKit[] kits, PlayerTeam[] teams, String gameWorldName){
@@ -38,15 +40,18 @@ public class Game extends JavaPlugin{
     }
 
     public void onEnable(){
-        gameWorld = Bukkit.getWorld(gameWorldName);
+        lobbyWorld = Bukkit.getWorld("lobby");
 
         String lobbySpawn = mapConfig.getString("spawns.Lobby");
 
-        spawnLocation = DatapointParser.parse(lobbySpawn);
+        spawnLocation = DatapointParser.parse(lobbySpawn, lobbyWorld);
 
         arcade = new Arcade(this, kits, teams);
     }
 
+    public void reloadGameWorld(){
+        gameWorld = Bukkit.getWorld(gameWorldName);
+    }
 
     public Location getSpawnLocation() {
         return spawnLocation;
@@ -54,6 +59,14 @@ public class Game extends JavaPlugin{
 
     public World getGameWorld() {
         return gameWorld;
+    }
+
+    public String getGameWorldName() {
+        return gameWorldName;
+    }
+
+    public void setGameWorld(World gameWorld) {
+        this.gameWorld = gameWorld;
     }
 
     public NotificationManager getNotificationManager() {
@@ -80,5 +93,11 @@ public class Game extends JavaPlugin{
         return arcade;
     }
 
-    public void onStart(){}
+    public void onStart(){
+        reloadGameWorld();
+        arcade.getTeamManager().reloadTeams();
+        UtilWorld.ClearWorld(getGameWorld());
+
+        arcade.getDebugManager().print(gameWorld.toString());
+    }
 }
