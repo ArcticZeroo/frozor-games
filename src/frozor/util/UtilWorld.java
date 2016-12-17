@@ -55,6 +55,7 @@ public class UtilWorld {
     }
 
     public static void ClearWorld(World world){
+        System.out.println("Clearing entities in world " + world.getName());
         List<Entity> entities = world.getEntities();
         for(Entity entity : entities){
             if(!(entity instanceof Player)){
