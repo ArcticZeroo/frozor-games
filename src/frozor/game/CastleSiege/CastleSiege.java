@@ -64,13 +64,6 @@ public class CastleSiege extends Game implements Listener{
     private void createKings(){
         redKing = new CastleKing(this, "Red", ChatColor.RED);
         blueKing = new CastleKing(this, "Blue", ChatColor.BLUE);
-
-        redKing.getKing().setBaby(false);
-        blueKing.getKing().setBaby(false);
-        redKing.getKing().setVillager(true);
-        blueKing.getKing().setVillager(true);
-
-        //redKing.getKing().getLocation().setPitch(180F);
     }
 
     @Override
@@ -258,6 +251,7 @@ public class CastleSiege extends Game implements Listener{
 
     @EventHandler
     public void onKingDamage(EntityDamageEvent event){
+        if(event.isCancelled()) return;
         if(event.getEntityType() == EntityType.ZOMBIE ) {
             if (arcade.getGameState() != GameState.PLAYING) {
                 event.setCancelled(true);
@@ -272,6 +266,7 @@ public class CastleSiege extends Game implements Listener{
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onKingDamageByPlayer(EntityDamageByEntityEvent event){
+        if(event.isCancelled()) return;
         if(event.getEntityType() == EntityType.ZOMBIE ){
             if(arcade.getGameState() != GameState.PLAYING){
                 event.setCancelled(true);
