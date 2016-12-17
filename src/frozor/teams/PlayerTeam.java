@@ -1,6 +1,5 @@
 package frozor.teams;
 
-import groovyjarjarcommonscli.Option;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.Scoreboard;
@@ -9,7 +8,7 @@ import org.bukkit.scoreboard.Team;
 public class PlayerTeam {
     private String teamName;
     private ChatColor teamColor;
-    private Team scoreboardTeam;
+    private Team scoreboardTeam = null;
     private Location[] teamSpawns;
 
     public PlayerTeam(String displayName, ChatColor teamColor){
@@ -35,7 +34,14 @@ public class PlayerTeam {
 
     public void register(Scoreboard scoreboard){
         scoreboardTeam = scoreboard.registerNewTeam(teamName);
-        scoreboardTeam.setPrefix(getTeamColor().toString());
+        scoreboardTeam.setPrefix(getTeamColor() + "");
+        scoreboardTeam.setCanSeeFriendlyInvisibles(true);
+    }
+
+    public void unregister(){
+        if(scoreboardTeam == null) return;
+        scoreboardTeam.unregister();
+        scoreboardTeam = null;
     }
 
     public Team getScoreboardTeam() {
