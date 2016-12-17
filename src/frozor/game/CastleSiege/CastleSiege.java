@@ -1,5 +1,6 @@
 package frozor.game.CastleSiege;
 
+import frozor.component.TimeFormatter;
 import frozor.enums.GameState;
 import frozor.events.ChestRefillTimeChangeEvent;
 import frozor.events.CustomPlayerSpawnEvent;
@@ -143,11 +144,7 @@ public class CastleSiege extends Game implements Listener{
     public void updateGameTimer(){
         if(arcade.getGameState() == GameState.END) return;
         //arcade.getDebugManager().print("Updating game timer");
-        if(castleGameTimer.getTime() > 60){
-            arcade.getGameScoreboard().setLine(11, String.format("%.1f Minutes", castleGameTimer.getTime() / 60F));
-        }else{
-            arcade.getGameScoreboard().setLine(11, String.format("%d Seconds", castleGameTimer.getTime()));
-        }
+        arcade.getGameScoreboard().setLine(11, TimeFormatter.toHumanReadable(castleGameTimer.getTime()));
     }
 
     @EventHandler
