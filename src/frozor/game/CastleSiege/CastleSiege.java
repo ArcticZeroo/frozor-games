@@ -1,5 +1,6 @@
 package frozor.game.CastleSiege;
 
+import frozor.component.TimeFormatter;
 import frozor.enums.GameState;
 import frozor.events.ChestRefillTimeChangeEvent;
 import frozor.events.CustomPlayerSpawnEvent;
@@ -63,13 +64,6 @@ public class CastleSiege extends Game implements Listener{
     private void createKings(){
         redKing = new CastleKing(this, "Red", ChatColor.RED);
         blueKing = new CastleKing(this, "Blue", ChatColor.BLUE);
-
-        redKing.getKing().setBaby(false);
-        blueKing.getKing().setBaby(false);
-        redKing.getKing().setVillager(true);
-        blueKing.getKing().setVillager(true);
-
-        //redKing.getKing().getLocation().setPitch(180F);
     }
 
     @Override
@@ -143,11 +137,7 @@ public class CastleSiege extends Game implements Listener{
     public void updateGameTimer(){
         if(arcade.getGameState() == GameState.END) return;
         //arcade.getDebugManager().print("Updating game timer");
-        if(castleGameTimer.getTime() > 60){
-            arcade.getGameScoreboard().setLine(11, String.format("%.1f Minutes", castleGameTimer.getTime() / 60F));
-        }else{
-            arcade.getGameScoreboard().setLine(11, String.format("%d Seconds", castleGameTimer.getTime()));
-        }
+        arcade.getGameScoreboard().setLine(11, TimeFormatter.toHumanReadable(castleGameTimer.getTime()));
     }
 
     @EventHandler
@@ -176,6 +166,7 @@ public class CastleSiege extends Game implements Listener{
     }
 
     private Boolean isProtectedLocation(Location location){
+        if(getGameWorld() == null) return false;
         if(!location.getWorld().getName().equals(getGameWorld().getName())) return false;
 
         if(location.getBlock().getType() == Material.CHEST){
@@ -260,6 +251,7 @@ public class CastleSiege extends Game implements Listener{
 
     @EventHandler
     public void onKingDamage(EntityDamageEvent event){
+        if(event.isCancelled()) return;
         if(event.getEntityType() == EntityType.ZOMBIE ) {
             if (arcade.getGameState() != GameState.PLAYING) {
                 event.setCancelled(true);
@@ -274,6 +266,7 @@ public class CastleSiege extends Game implements Listener{
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onKingDamageByPlayer(EntityDamageByEntityEvent event){
+        if(event.isCancelled()) return;
         if(event.getEntityType() == EntityType.ZOMBIE ){
             if(arcade.getGameState() != GameState.PLAYING){
                 event.setCancelled(true);

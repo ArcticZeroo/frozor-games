@@ -1,5 +1,6 @@
 package frozor.arcade;
 
+import a.j.m.P;
 import frozor.commands.GameCommands;
 import frozor.commands.KitCommands;
 import frozor.component.FrozorScoreboard;
@@ -22,6 +23,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -143,13 +145,19 @@ public class Arcade implements Listener{
     }
 
     //Event Handlers
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onNameTagDamage(EntityDamageEvent event){
-        if(event.getEntityType() == EntityType.SQUID || event.getEntityType() == EntityType.ARMOR_STAND){
-            if(event.getEntityType() == EntityType.SQUID){
-                Entity entity = (Zombie) event.getEntity().getVehicle();
-                CallEvent(new EntityDamageEvent(entity, event.getCause(), event.getDamage()));
+        if(event.getEntityType() == EntityType.SILVERFISH || event.getEntityType() == EntityType.ARMOR_STAND){
+            Entity toDamage;
+            if(event.getEntityType() == EntityType.SILVERFISH){
+                toDamage = event.getEntity().getVehicle();
+            }else{
+                toDamage = event.getEntity().getVehicle().getVehicle();
             }
+
+            CallEvent(new EntityDamageEvent(toDamage, event.getCause(), event.getDamage()));
+
             event.setCancelled(true);
         }
     }

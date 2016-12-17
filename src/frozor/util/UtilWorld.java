@@ -15,18 +15,17 @@ public class UtilWorld {
         World world = Bukkit.getServer().createWorld(new WorldCreator(worldName));
         world.setAutoSave(false);
         world.setKeepSpawnInMemory(false);
+        ClearWorld(world);
         return world;
     }
 
     public static void unloadWorld(String worldName){
-        System.out.println(String.format("Unloading world %s", worldName));
-        unloadChunks(Bukkit.getWorld(worldName));
-        Bukkit.getWorld(worldName).setAutoSave(false);
-        Bukkit.getServer().unloadWorld(worldName, false);
+        unloadWorld(Bukkit.getWorld(worldName));
     }
 
     public static void unloadWorld(World world){
         System.out.println(String.format("Unloading world %s", world.getName()));
+        ClearWorld(world);
         world.setAutoSave(false);
         unloadChunks(world);
         Bukkit.getServer().unloadWorld(world.getName(), false);
@@ -51,11 +50,12 @@ public class UtilWorld {
         System.out.println(String.format("Unloading chunks for world %s", world.getName()));
         Chunk[] loadedChunks = world.getLoadedChunks();
         for(Chunk chunk : loadedChunks){
-            chunk.unload();
+            chunk.unload(false, false);
         }
     }
 
     public static void ClearWorld(World world){
+        System.out.println("Clearing entities in world " + world.getName());
         List<Entity> entities = world.getEntities();
         for(Entity entity : entities){
             if(!(entity instanceof Player)){
