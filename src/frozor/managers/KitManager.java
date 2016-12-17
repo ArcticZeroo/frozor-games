@@ -1,21 +1,19 @@
 package frozor.managers;
 
-import a.j.m.P;
 import frozor.arcade.Arcade;
 import frozor.enums.GameState;
-import frozor.events.GameStateChangeEvent;
 import frozor.kits.PlayerKit;
 import frozor.util.UtilChat;
-import frozor.util.UtilItem;
 import frozor.util.UtilPlayer;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -24,10 +22,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class KitManager implements Listener{
     private Arcade arcade;
@@ -68,15 +63,30 @@ public class KitManager implements Listener{
         selectedKits.put(uuid, kit);
     }
 
+    private String getEquipMessage(PlayerKit kit){
+        return (getNotificationManager().getMessage(String.format("You equipped %s kit.", ChatColor.YELLOW + kit.getName() + ChatColor.GRAY)));
+    }
+
+    @SuppressWarnings("deprecation")
+    public void sendEquippedKitMessage(Player player, PlayerKit kit){
+        if(arcade.getGameState().compareTo(GameState.START) < 0){
+            //If the game has not started yet
+            player.sendMessage(getEquipMessage(kit));
+        }else{
+            arcade.getDebugManager().print(Integer.toString(player.getTicksLived()));
+            if(player.getTicksLived() < 200){
+                player.sendMessage(getEquipMessage(kit));
+                arcade.getDamageManager().respawnPlayer(player);
+            }else{
+                player.sendMessage(getNotificationManager().getMessage(String.format("You equipped %s kit. It will be equipped when you respawn.", ChatColor.YELLOW + kit.getName() + ChatColor.GRAY)));
+            }
+        }
+    }
+
     public void changeKit(Player player, PlayerKit kit){
         selectKit(player.getUniqueId(), kit);
 
-        if(arcade.getGameState().compareTo(GameState.START) < 0){
-            //If the game has not started yet
-            player.sendMessage(getNotificationManager().getMessage(String.format("You equipped %s kit.", ChatColor.YELLOW + kit.getName() + ChatColor.GRAY)));
-        }else{
-            player.sendMessage(getNotificationManager().getMessage(String.format("You equipped %s kit. It will be equipped when you respawn.", ChatColor.YELLOW + kit.getName() + ChatColor.GRAY)));
-        }
+        sendEquippedKitMessage(player, kit);
     }
 
     public void changeKit(Player player, String kitName){
@@ -98,7 +108,7 @@ public class KitManager implements Listener{
         if(selectedKits.containsKey(player.getUniqueId())){
             PlayerKit selectedKit = selectedKits.get(player.getUniqueId());
 
-            UtilPlayer.cleanPlayer(player);
+            UtilPlayer.cleanPlayer(player, arcade.getGame().getSettings().getGameMode());
             selectedKit.giveItems(player);
         }
     }
@@ -121,7 +131,14 @@ public class KitManager implements Listener{
     public void handlePlayerJoin(Player player){
         if(defaultKit != null){
             selectKit(player.getUniqueId(), defaultKit);
-            player.sendMessage(notificationManager.getMessage("Equipped default kit " + ChatColor.YELLOW + defaultKit.getName() + ChatColor.GRAY + "."));
+
+            TextComponent defaultKitMessage = new TextComponent(notificationManager.getMessage("Equipped default kit " + ChatColor.YELLOW + defaultKit.getName() + ChatColor.GRAY + ". Type "));
+            TextComponent kitListCommand = UtilChat.createHoverCommandComponent(ChatColor.GREEN + "/kit list", ChatColor.GREEN + "Click to view kits", "/kit list");
+
+            defaultKitMessage.addExtra(kitListCommand);
+            defaultKitMessage.addExtra(ChatColor.GRAY + " for the full list.");
+
+            UtilChat.SendComponent(player, defaultKitMessage);
         }
     }
 
@@ -130,7 +147,7 @@ public class KitManager implements Listener{
 
         for(PlayerKit kit : arcade.getKitManager().getKits().values()){
             TextComponent kitMessage = new TextComponent(arcade.getKitManager().getNotificationManager().getPrefixColor() + "> ");
-            TextComponent viewComponent = UtilChat.createHoverCommandComponent(ChatColor.AQUA + "[View] ", ChatColor.AQUA + "Click to view details", "/kit view " + kit.getName().toLowerCase());
+            TextComponent viewComponent = UtilChat.createHoverCommandComponent(ChatColor.AQUA + "[View] ", ChatColor.AQUA + "Click to view " + kit.getName(), "/kit view " + kit.getName().toLowerCase());
             TextComponent selectComponent = UtilChat.createHoverCommandComponent(ChatColor.GREEN + "[Select] ", ChatColor.GREEN + "Click to select " + kit.getName(), "/kit " + kit.getName().toLowerCase());
 
             kitMessage.addExtra(viewComponent);
@@ -162,7 +179,8 @@ public class KitManager implements Listener{
         ItemMeta itemMeta = kitItem.getItemMeta();
         itemMeta.setDisplayName(ChatColor.AQUA + (ChatColor.BOLD + kit.getName()));
 
-        List<String> kitDescription = kit.getDescription();
+        List<String> kitDescription = new ArrayList<>();
+        kitDescription.addAll(kit.getDescription());
 
         //Enchant the display item and add to lore if the kit is selected
         if(getSelectedKit(player) == kit){
@@ -237,12 +255,5 @@ public class KitManager implements Listener{
         if(arcade.getGameState() != GameState.TIMER && arcade.getGameState() != GameState.LOBBY ) return;
 
         selectedKits.remove(event.getPlayer().getUniqueId());
-    }
-
-    @EventHandler
-    public void onGameStateChange(GameStateChangeEvent event){
-        if(event.getGameState() == GameState.START){
-            assignPlayerKits();
-        }
     }
 }
