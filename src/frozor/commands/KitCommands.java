@@ -1,24 +1,12 @@
 package frozor.commands;
 
 import frozor.arcade.Arcade;
-import frozor.enums.GameState;
-import frozor.kits.PlayerKit;
 import frozor.managers.KitManager;
-import frozor.util.UtilChat;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class KitCommands implements CommandExecutor{
     private Arcade arcade;
