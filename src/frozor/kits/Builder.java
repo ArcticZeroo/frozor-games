@@ -5,10 +5,8 @@ import frozor.itemstack.ArmorSet;
 import frozor.itemstack.ArmorSetType;
 import frozor.util.UtilChat;
 import frozor.util.UtilItem;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -26,6 +24,7 @@ public class Builder extends PlayerKit {
                         UtilChat.getKitEquipmentString("Iron Axe"),
                         UtilChat.getKitEquipmentString("Iron Shovel"),
                         UtilChat.getKitItemString("Brick", 64),
+                        UtilChat.getKitItemString("Redstone", 16),
                         UtilChat.getKitEquipmentString("Chainmail Helmet"),
                         UtilChat.getKitEquipmentString("Chainmail Chestplate"),
                         UtilChat.getKitEquipmentString("Chainmail Leggings"),
@@ -37,7 +36,8 @@ public class Builder extends PlayerKit {
                         UtilItem.createUnbreakableItem(Material.DIAMOND_PICKAXE),
                         UtilItem.createUnbreakableItem(Material.IRON_AXE),
                         UtilItem.createUnbreakableItem(Material.IRON_SPADE),
-                        new ItemStack(Material.BRICK, 64)
+                        UtilItem.setSoulbound(new ItemStack(Material.BRICK, 64)),
+                        UtilItem.setSoulbound(new ItemStack(Material.REDSTONE, 16))
                 });
 
         setStartingArmor(ArmorSet.getArmorSet(ArmorSetType.CHAINMAIL));

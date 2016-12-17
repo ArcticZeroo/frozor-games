@@ -3,7 +3,9 @@ package frozor.kits;
 
 import frozor.itemstack.ArmorSet;
 import frozor.itemstack.ArmorSetType;
+import frozor.util.UtilChat;
 import frozor.util.UtilItem;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,8 +17,23 @@ import java.util.Arrays;
 
 public class Scout extends PlayerKit {
     public Scout() {
-        super("Scout", new ArrayList<>(Arrays.asList("§7Run at the speed of light!", "", "§fYou Will Receive:", "§3•§Wood Sword", "§3•§a64 §fARrows", "§3•§fChainmail Helmet", "§3•§fChainmail Chestplate", "§3•§fChainmail Leggings", "§3•§fChainmail Boots")), new ItemStack(Material.SUGAR));
+        super("Scout",
+                new ArrayList<>(Arrays.asList(
+                        ChatColor.GRAY + "Faster than a speeding",
+                        ChatColor.GRAY + "bullet, but kind of",
+                        ChatColor.GRAY + "scrawny.",
+                        "",
+                        ChatColor.WHITE + "You Will Receive:",
+                        UtilChat.getKitEquipmentString("Wood Sword"),
+                        UtilChat.getKitItemString("Ender Pearl", 2),
+                        UtilChat.getKitEquipmentString("Blue Leather Helmet"),
+                        UtilChat.getKitEquipmentString("Blue Leather Chestplate"),
+                        UtilChat.getKitEquipmentString("Blue Leather Leggings"),
+                        UtilChat.getKitEquipmentString("Blue Leather Boots"),
+                        UtilChat.getKitEquipmentString("Permanent Speed I"),
+                        UtilChat.getKitNegativeString("Permanent Weakness I"))),
 
+                new ItemStack(Material.SUGAR));
         addStartingItems(new ItemStack[]{UtilItem.createUnbreakableItem(Material.WOOD_SWORD), new ItemStack(Material.ENDER_PEARL, 2)});
 
         ItemStack[] armorSet = ArmorSet.getArmorSet(ArmorSetType.LEATHER);
