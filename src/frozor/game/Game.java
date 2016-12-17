@@ -94,9 +94,6 @@ public class Game extends JavaPlugin{
     }
 
     public void onStart(){
-        reloadGameWorld();
-        UtilWorld.ClearWorld(getGameWorld());
 
-        arcade.getDebugManager().print(gameWorld.toString());
     }
 }
