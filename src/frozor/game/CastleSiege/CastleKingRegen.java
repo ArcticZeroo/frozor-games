@@ -17,13 +17,11 @@ public class CastleKingRegen extends BukkitRunnable
     @Override
     public void run() {
         if(castleSiege.getRedKing().canRegen()){
-            castleSiege.getArcade().getDebugManager().print("Regenning red");
             castleSiege.getRedKing().regen();
             castleSiege.updateRedHealth();
         }
 
         if(castleSiege.getBlueKing().canRegen()){
-            castleSiege.getArcade().getDebugManager().print("Regenning blue");
             castleSiege.getBlueKing().regen();
             castleSiege.updateBlueHealth();
         }
