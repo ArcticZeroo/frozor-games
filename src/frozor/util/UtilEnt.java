@@ -21,17 +21,29 @@ public class UtilEnt {
         armorStand.setGravity(false);
         armorStand.setBasePlate(false);
         armorStand.setMarker(true);
+        armorStand.setSmall(true);
 
-        Squid squid = (Squid) location.getWorld().spawnEntity(location.add(0, 2, 0), EntityType.SQUID);
+        /*Squid squid = (Squid) location.getWorld().spawnEntity(location.add(0, 2, 0), EntityType.SQUID);
         squid.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 999999, 0), true);
         squid.setPassenger(armorStand);
 
-        entity.setPassenger(squid);
+        entity.setPassenger(squid);*/
+        entity.setPassenger(armorStand);
 
         return entity;
     }
 
-    public static void freeze(Entity entity){
+    public static Entity freeze(Entity entity){
         UtilNms.setEntityNBT(entity, "NoAI", true);
+        return entity;
+    }
+
+    public static Entity silence(Entity entity){
+        UtilNms.setEntityNBT(entity, "Silent", true);
+        return entity;
+    }
+
+    public static Entity vegetate(Entity entity){
+        return freeze(silence(entity));
     }
 }
