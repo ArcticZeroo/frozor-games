@@ -23,6 +23,7 @@ public class Airbender extends PlayerKit {
                         "",
                         ChatColor.WHITE + "You Will Receive:",
                         UtilChat.getKitEquipmentString("Air Staff"),
+                        UtilChat.getKitEquipmentString("Gold Shovel"),
                         UtilChat.getKitEquipmentString("Gold Boots"),
                         UtilChat.getKitItemString("Fall Damage", 0))),
                 new ItemStack(Material.STICK),
@@ -35,7 +36,7 @@ public class Airbender extends PlayerKit {
         airStaffItemMeta.setDisplayName(ChatColor.WHITE + "Air Staff");
         airStaff.setItemMeta(airStaffItemMeta);
 
-        addStartingItems(new ItemStack[]{UtilItem.setSoulbound(airStaff)});
+        addStartingItems(new ItemStack[]{UtilItem.createUnbreakableItem(Material.GOLD_SPADE), UtilItem.setSoulbound(airStaff)});
 
         ItemStack[] armorSet = {UtilItem.createUnbreakableItem(Material.GOLD_BOOTS)};
 

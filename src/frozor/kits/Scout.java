@@ -34,7 +34,7 @@ public class Scout extends PlayerKit {
                         UtilChat.getKitNegativeString("Permanent Weakness I"))),
 
                 new ItemStack(Material.SUGAR));
-        addStartingItems(new ItemStack[]{UtilItem.createUnbreakableItem(Material.WOOD_SWORD), new ItemStack(Material.ENDER_PEARL, 2)});
+        addStartingItems(new ItemStack[]{UtilItem.createUnbreakableItem(Material.WOOD_SWORD), UtilItem.setSoulbound(new ItemStack(Material.ENDER_PEARL, 2))});
 
         ItemStack[] armorSet = ArmorSet.getArmorSet(ArmorSetType.LEATHER);
         for(ItemStack armorPiece : armorSet){

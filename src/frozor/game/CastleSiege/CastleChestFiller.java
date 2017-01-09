@@ -29,14 +29,14 @@ public class CastleChestFiller {
         List<ItemStack> lootList = new ArrayList<>();
         switch (lootType){
             case MATERIALS:
-                lootList.add(new ItemStack(Material.SMOOTH_BRICK, random.nextInt(32)+32));
-                lootList.add(new ItemStack(Material.SMOOTH_BRICK, random.nextInt(16)+24));
-                lootList.add(new ItemStack(Material.BRICK, random.nextInt(32)+32));
-                lootList.add(new ItemStack(Material.BRICK, random.nextInt(16)+24));
-                lootList.add(new ItemStack(Material.COBBLESTONE, random.nextInt(32)+32));
-                lootList.add(new ItemStack(Material.COBBLESTONE, random.nextInt(16)+24));
-                lootList.add(new ItemStack(Material.WOOD, random.nextInt(32)+32));
-                lootList.add(new ItemStack(Material.WOOD, random.nextInt(16)+24));
+                lootList.add(new ItemStack(Material.SMOOTH_BRICK, random.nextInt(32)+16));
+                lootList.add(new ItemStack(Material.SMOOTH_BRICK, random.nextInt(16)+16));
+                lootList.add(new ItemStack(Material.BRICK, random.nextInt(32)+16));
+                lootList.add(new ItemStack(Material.BRICK, random.nextInt(16)+16));
+                lootList.add(new ItemStack(Material.COBBLESTONE, random.nextInt(32)+16));
+                lootList.add(new ItemStack(Material.COBBLESTONE, random.nextInt(16)+16));
+                lootList.add(new ItemStack(Material.WOOD, random.nextInt(32)+16));
+                lootList.add(new ItemStack(Material.WOOD, random.nextInt(16)+16));
                 lootList.add(new ItemStack(Material.LOG, random.nextInt(12)+4));
                 lootList.add(new ItemStack(Material.LOG, random.nextInt(8)+2));
                 lootList.add(new ItemStack(Material.IRON_INGOT, random.nextInt(6)+2));

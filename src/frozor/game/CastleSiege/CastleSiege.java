@@ -27,16 +27,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CastleSiege extends Game implements Listener{
     private CastleKing redKing;
@@ -45,9 +43,10 @@ public class CastleSiege extends Game implements Listener{
     private CastleChestFiller chestFiller;
     private ChestRefillTimer chestRefillTimer;
     private CastleGameTimer castleGameTimer;
+    private List<UUID> fallDamageCancel;
 
     public CastleSiege(){
-        super("Castle Siege", new PlayerKit[]{new Knight(), new Archer(), new Scout(), new FireMage(), new Builder(), new Cactus(), new Medic(), new Airbender()}, new PlayerTeam[]{new PlayerTeam("Blue", ChatColor.BLUE), new PlayerTeam("Red", ChatColor.RED)}, "rivendale");
+        super("Castle Siege", new PlayerKit[]{new Knight(), new Archer(), new Scout(), new FireMage(), new Builder(), new Cactus(), new Medic()}, new PlayerTeam[]{new PlayerTeam("Blue", ChatColor.BLUE), new PlayerTeam("Red", ChatColor.RED)}, "rivendale");
 
         getSettings().setPlayerMin(15);
         getSettings().setPlayerMax(30);
@@ -100,6 +99,11 @@ public class CastleSiege extends Game implements Listener{
 
         arcade.getTeamManager().getTeams().get("Red").getScoreboardTeam().addEntry(Integer.toString(redKing.getKing().getEntityId()));
         arcade.getTeamManager().getTeams().get("Blue").getScoreboardTeam().addEntry(Integer.toString(blueKing.getKing().getEntityId()));
+
+        fallDamageCancel = new ArrayList<>();
+        for(Player player : getServer().getOnlinePlayers()){
+            fallDamageCancel.add(player.getUniqueId());
+        }
     }
 
     @Override
@@ -239,12 +243,13 @@ public class CastleSiege extends Game implements Listener{
         }
     }
 
-    private void sendKingAttackMessage(PlayerTeam playerTeam){
+    private void sendKingNotification(PlayerTeam playerTeam, boolean sendMessage){
         Set<String> teamPlayers = playerTeam.getScoreboardTeam().getEntries();
         for(String teamEntry : teamPlayers){
             Player player = Bukkit.getPlayer(teamEntry);
             if(player != null){
-                player.sendMessage(notificationManager.getMessage("Your king is under attack!"));
+                player.playSound(player.getLocation(), Sound.WITHER_HURT, 500F, 0.5F);
+                if(sendMessage) player.sendMessage(notificationManager.getMessage("Your king is under attack!"));
             }
         }
     }
@@ -301,19 +306,21 @@ public class CastleSiege extends Game implements Listener{
                 redKing.setLastDamage();
                 updateRedHealth();
 
-                if(sendDamageMessage) alertTeam = arcade.getTeamManager().getTeams().get(redKing.getKingType());
+                alertTeam = arcade.getTeamManager().getTeams().get(redKing.getKingType());
             }else if(event.getEntity() == blueKing.getKing()){
                 if(blueKing.getKing().getHealth() < 1) return;
                 blueKing.setLastDamage();
                 updateBlueHealth();
 
-                if(sendDamageMessage) alertTeam = arcade.getTeamManager().getTeams().get(blueKing.getKingType());
+                alertTeam = arcade.getTeamManager().getTeams().get(blueKing.getKingType());
             }else{
                 return;
             }
 
-            if(alertTeam != null && sendDamageMessage){
-                sendKingAttackMessage(alertTeam);
+            event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.ZOMBIE_HURT, 2F, 1F);
+
+            if(alertTeam != null){
+                sendKingNotification(alertTeam, sendDamageMessage);
             }
         }
     }
@@ -336,11 +343,14 @@ public class CastleSiege extends Game implements Listener{
             if(event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
                 event.setDamage(event.getDamage() * 0.75);
             }else if(event.getCause() == EntityDamageEvent.DamageCause.FALL){
-                if(event.getEntity().getTicksLived() < 30*20){
+                if(fallDamageCancel.contains(event.getEntity().getUniqueId())){
+                    arcade.getDebugManager().print("Cancelling fall damage because they have not taken any  yet this life...");
+                    fallDamageCancel.remove(event.getEntity().getUniqueId());
                     event.setCancelled(true);
                     return;
                 }
-                event.setDamage(event.getDamage() * 0.5);
+                arcade.getDebugManager().print("They have already had their fall damage cancelled, just reducing damage.");
+                event.setDamage(event.getDamage() * 0.6);
             }
         }
     }
@@ -357,6 +367,7 @@ public class CastleSiege extends Game implements Listener{
     @EventHandler
     public void onCustomSpawn(CustomPlayerSpawnEvent event){
         event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 100, 4));
+        fallDamageCancel.add(event.getPlayer().getUniqueId());
     }
 
     private void setWinScoreboard(String winText){
@@ -370,6 +381,8 @@ public class CastleSiege extends Game implements Listener{
         ItemStack item = event.getItem();
         if(item == null) return;
         if(item.getType() == Material.GOLD_SWORD && ChatColor.stripColor(item.getItemMeta().getDisplayName()).equals("Air Staff")){
+            if(event.getPlayer().getTicksLived() < 20*20L) return;
+
             Vector newVelocity = event.getPlayer().getVelocity();
             if(newVelocity.getY() < 0){
                 newVelocity.setY(0);
@@ -390,5 +403,10 @@ public class CastleSiege extends Game implements Listener{
                 item.setDurability((short)(item.getDurability() + (item.getType().getMaxDurability()/6)));
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event){
+        fallDamageCancel.remove(event.getPlayer().getUniqueId());
     }
 }

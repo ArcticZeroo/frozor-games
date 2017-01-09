@@ -25,15 +25,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.EnchantingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dye;
+
+import java.util.List;
 
 public class Arcade implements Listener{
     //private GameManager game`Manager;
@@ -218,6 +223,25 @@ public class Arcade implements Listener{
         lapis.setAmount(5);
 
         inventory.setItem(1, lapis);
+    }
+
+    //Stop Weather I guess
+    @EventHandler
+    public void onWeatherChange(WeatherChangeEvent event){
+        event.setCancelled(true);
+    }
+
+    //Prevent kit items from dropping
+    @EventHandler
+    public void onItemDrop(ItemSpawnEvent event){
+        ItemStack item = event.getEntity().getItemStack();
+        if(item.getItemMeta().spigot().isUnbreakable()){
+            event.setCancelled(true);
+        }else{
+            List<String> itemLore = item.getItemMeta().getLore();
+            if(itemLore == null || itemLore.size() == 0) return;
+            if(itemLore.contains(ChatColor.BLUE+"Soulbound")) event.setCancelled(true);
+        }
     }
 
     @EventHandler
